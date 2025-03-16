@@ -1,20 +1,16 @@
-import type { NavigateOptions } from "react-router-dom";
-
 import { HeroUIProvider } from "@heroui/system";
-import { useHref, useNavigate } from "react-router-dom";
-
-declare module "@react-types/shared" {
-  interface RouterConfig {
-    routerOptions: NavigateOptions;
-  }
-}
+import { useLocation, Router } from "wouter";
 
 export function Provider({ children }: { children: React.ReactNode }) {
-  const navigate = useNavigate();
+  const [location, setLocation] = useLocation();
+
+  const navigate = (to: string) => {
+    setLocation(to);
+  };
 
   return (
-    <HeroUIProvider navigate={navigate} useHref={useHref}>
-      {children}
+    <HeroUIProvider navigate={navigate} useHref={() => location}>
+      <Router>{children}</Router>
     </HeroUIProvider>
   );
 }
