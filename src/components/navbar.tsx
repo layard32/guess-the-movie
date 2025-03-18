@@ -19,7 +19,7 @@ export const Navbar = () => {
 
   const navItem = (item: (typeof siteConfig.navItems)[number]) => (
     <NavbarItem key={item.href}>
-      {/* TODO: cambiare da link a button */}
+      {/* TODO: cambiare da link a button ed associargli componenti corrette */}
       <Link
         className={clsx(
           linkStyles({ color: "foreground" }),
