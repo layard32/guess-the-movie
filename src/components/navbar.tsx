@@ -12,14 +12,14 @@ import { ThemeSwitch } from "@/components/theme-switch";
 import { Logo } from "@/components/icons";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/state/selectors";
-import { RootState } from "@/state/store";
 
 export const Navbar = () => {
   // prendo l'utente usadno useSelector
-  const user = useSelector((state: RootState) => state.auth.user);
+  const user = useSelector(selectUser);
 
   const navItem = (item: (typeof siteConfig.navItems)[number]) => (
     <NavbarItem key={item.href}>
+      {/* TODO: cambiare da link a button */}
       <Link
         className={clsx(
           linkStyles({ color: "foreground" }),
@@ -52,9 +52,9 @@ export const Navbar = () => {
       <NavbarContent className="sm:flex basis-1 pl-4" justify="end">
         <div className="flex gap-4 justify-start ml-2">
           {siteConfig.navItems.map((item) =>
-            user && item.label === "Profile"
+            user && (item.label === "Profile" || item.label === "Sign out")
               ? navItem(item)
-              : !user && item.label !== "Profile"
+              : !user && item.label !== "Profile" && item.label !== "Sign out"
                 ? navItem(item)
                 : null
           )}
