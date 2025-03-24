@@ -12,10 +12,14 @@ import { Button } from "@heroui/button";
 import SignIn from "./signIn";
 import LogIn from "./logIn";
 import { signOut } from "@/state/thunks";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/state/store";
 
 export const Navbar = () => {
-  // prendo l'utente usadno useSelector
+  // prendo l'utente con useSelector
   const user = useSelector(selectUser);
+  // dispatch per fare il logout
+  const dispatch: AppDispatch = useDispatch();
 
   return (
     <HeroUINavbar maxWidth="xl" position="sticky">
@@ -38,7 +42,7 @@ export const Navbar = () => {
           {user ? (
             <>
               <Button> Profile </Button>
-              <Button onPress={() => signOut}> Log out </Button>
+              <Button onPress={() => dispatch(signOut())}> Log out </Button>
             </>
           ) : (
             <>

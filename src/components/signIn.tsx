@@ -7,6 +7,7 @@ import {
   useDisclosure,
 } from "@heroui/modal";
 import { Button } from "@heroui/button";
+import Oauth from "./oauth";
 
 const signIn: React.FC = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -22,6 +23,7 @@ const signIn: React.FC = () => {
                 Register
               </ModalHeader>
               <ModalBody>
+                <Oauth />
                 <p>REGISTRATION FORM TO DO</p>
               </ModalBody>
             </>
