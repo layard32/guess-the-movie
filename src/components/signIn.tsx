@@ -8,6 +8,12 @@ import {
 } from "@heroui/modal";
 import { Button } from "@heroui/button";
 import Oauth from "./oauth";
+import UserForm from "./newUserForm";
+import {
+  passwordValidation,
+  emailValidation,
+  nameValidation,
+} from "@/state/userValidation";
 
 const signIn: React.FC = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -24,7 +30,11 @@ const signIn: React.FC = () => {
               </ModalHeader>
               <ModalBody>
                 <Oauth />
-                <p>REGISTRATION FORM TO DO</p>
+                <UserForm
+                  passwordValidation={passwordValidation}
+                  emailValidation={emailValidation}
+                  usernameValidation={nameValidation}
+                />
               </ModalBody>
             </>
           )}
