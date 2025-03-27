@@ -14,7 +14,7 @@ const oauth = () => {
 
   // restituisco un insieme di pulsanti per fare il login con i vari provider
   return (
-    <div>
+    <div className="mb-4">
       <Button onPress={() => handleLogin("github")}> Github</Button>
     </div>
   );

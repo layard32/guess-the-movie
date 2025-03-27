@@ -21,7 +21,12 @@ const signIn: React.FC = () => {
   return (
     <div>
       <Button onPress={onOpen}>Register</Button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false}>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        isDismissable={false}
+        placement="center"
+      >
         <ModalContent>
           {(onClose) => (
             <>
@@ -34,6 +39,7 @@ const signIn: React.FC = () => {
                   passwordValidation={passwordValidation}
                   emailValidation={emailValidation}
                   usernameValidation={nameValidation}
+                  closeModal={onOpenChange}
                 />
               </ModalBody>
             </>
