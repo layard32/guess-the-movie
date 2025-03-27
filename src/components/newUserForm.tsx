@@ -94,7 +94,7 @@ const userForm: React.FC<Props> = ({
               : undefined
           }
         />
-        <Button type="submit" variant="bordered" color="primary">
+        <Button type="submit" color="primary" className="mt-1 mb-2.5">
           Submit
         </Button>
       </Form>

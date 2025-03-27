@@ -31,7 +31,7 @@ const signIn: React.FC = () => {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Register
+                Create a new account or sign in with your favorite social
               </ModalHeader>
               <ModalBody>
                 <Oauth />

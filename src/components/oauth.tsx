@@ -3,19 +3,36 @@ import { Button } from "@heroui/button";
 import { useDispatch } from "react-redux";
 import { loginWithOAuth } from "@/state/thunks";
 import { AppDispatch } from "@/state/store";
+import { FaGithub } from "react-icons/fa";
+import { Provider } from "@supabase/supabase-js";
+import { FaGoogle } from "react-icons/fa";
 
 const oauth = () => {
   const dispatch: AppDispatch = useDispatch();
 
   // la logica viene presa dallo store, precisamente dal thunks loginwithoauth
-  const handleLogin = async (provider: string) => {
-    dispatch(loginWithOAuth({ provider: "github" }));
+  const handleLogin = async (provider: Provider) => {
+    dispatch(loginWithOAuth({ provider }));
   };
 
   // restituisco un insieme di pulsanti per fare il login con i vari provider
   return (
-    <div className="mb-4">
-      <Button onPress={() => handleLogin("github")}> Github</Button>
+    <div className="mb-4 flex gap-4 w-full">
+      <Button
+        onPress={() => handleLogin("github")}
+        variant="bordered"
+        color="secondary"
+      >
+        <FaGithub /> Github
+      </Button>
+      <Button
+        onPress={() => handleLogin("github")}
+        variant="bordered"
+        color="secondary"
+      >
+        <FaGoogle />
+        Google
+      </Button>
     </div>
   );
 };
