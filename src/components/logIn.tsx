@@ -10,6 +10,7 @@ import { Button } from "@heroui/button";
 import Oauth from "./oauth";
 
 const logIn: React.FC = () => {
+  // gestione del modal tramite heroui
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
