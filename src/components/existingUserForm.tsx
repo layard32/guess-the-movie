@@ -42,7 +42,7 @@ const existingUserForm: React.FC<Props> = ({
         await dispatch(fetchSession());
         closeModal?.();
         addToast({
-          title: "You successfully logged in",
+          title: "Successfully logged in",
           color: "success",
           timeout: 3500,
           shouldShowTimeoutProgress: true,
