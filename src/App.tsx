@@ -1,5 +1,6 @@
 import { Route, Switch } from "wouter";
 import IndexPage from "@/pages/index";
+import ProfilePage from "@/pages/profile";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { fetchSession } from "@/state/thunks";
@@ -32,7 +33,7 @@ function App() {
       {/* switch consente di fare matching esclusivo (il primo corretto viene renderizzato; gli altri vengono ignorati) */}
       <Switch>
         <Route path="/" component={IndexPage} />
-        <Route path="/profile" component={IndexPage} />
+        <Route path="/profile" component={ProfilePage} />
         <Route path="*" component={IndexPage} />
       </Switch>
     </>
