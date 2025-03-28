@@ -5,8 +5,17 @@ import { Provider } from "@supabase/supabase-js";
 // Signup with email and password
 export const signup = createAsyncThunk(
   "auth/signup",
-  async ({ email, password }: { email: string; password: string }) => {
-    const { data, error } = await supabase.auth.signUp({ email, password });
+  async ({ email, password, username }: { email: string; password: string, username: string }) => {
+    const { data, error } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+      // passo l'username come metadata
+      options: {
+        data: {
+          user_name: username,
+        },
+      },
+    })    
     if (error) throw new Error(error.message);
     return data;
   }

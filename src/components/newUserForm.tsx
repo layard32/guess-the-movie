@@ -38,7 +38,9 @@ const newUserForm: React.FC<Props> = ({
 
     // try catch per gestire gli errori di registrazione
     try {
-      const result = await dispatch(signup({ email, password })).unwrap();
+      const result = await dispatch(
+        signup({ email: email, password: password, username: username })
+      ).unwrap();
       if (result?.user) {
         // se la registrazione è riuscita, chiudiamo messaggio e mostriamo il toast
         closeModal?.();
