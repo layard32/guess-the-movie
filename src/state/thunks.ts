@@ -6,18 +6,6 @@ import { Provider } from "@supabase/supabase-js";
 export const signup = createAsyncThunk(
   "auth/signup",
   async ({ email, password }: { email: string; password: string }) => {
-    // prima di fare il signup controllo se l'email è già registrata
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password: "dummy_password", // uso una dumy-password perché non voglio fare il login
-    });
-
-    if (!signInError || signInError.message === "Invalid login credentials") {
-      // se non ci sono errori o l'errore è "Invalid login credentials", significa che l'email è già registrata
-      throw new Error("Data not valid.");
-    }
-
-    // se l'email non è registrata, procedo con il signup
     const { data, error } = await supabase.auth.signUp({ email, password });
     if (error) throw new Error(error.message);
     return data;

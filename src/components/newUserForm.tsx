@@ -20,10 +20,14 @@ const newUserForm: React.FC<Props> = ({
   passwordValidation,
   closeModal,
 }: Props) => {
+  // per evitare spam di submit
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
   // gestione logica del form per sign up con email e password
   const dispatch: AppDispatch = useDispatch();
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (isSubmitting) return; // previene invio multiplo del form
     // utilizzo formdata per prendere i campi email, password ed username inseriti
     const formData = new FormData(e.currentTarget);
     const username = formData.get("username") as string;
@@ -32,7 +36,6 @@ const newUserForm: React.FC<Props> = ({
 
     // try catch per gestire gli errori di registrazione
     try {
-      dispatch(signup({ email, password }));
       const result = await dispatch(signup({ email, password })).unwrap();
       if (result?.user) {
         // se la registrazione è riuscita, chiudiamo messaggio e mostriamo il toast
@@ -54,6 +57,8 @@ const newUserForm: React.FC<Props> = ({
         timeout: 2500,
         shouldShowTimeoutProgress: true,
       });
+    } finally {
+      setIsSubmitting(false); // reset dello stato di submitting
     }
   };
 

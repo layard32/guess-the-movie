@@ -30,7 +30,6 @@ const existingUserForm: React.FC<Props> = ({
 
     // try catch per gestire gli errori di registrazione
     try {
-      dispatch(login({ email, password }));
       const result = await dispatch(login({ email, password })).unwrap();
       if (result?.user) {
         // se il login è riuscito, fetchiamo la sessione, chiudiamo il modale e mostriamo il toast
