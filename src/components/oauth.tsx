@@ -26,7 +26,7 @@ const oauth = () => {
         <FaGithub /> Github
       </Button>
       <Button
-        onPress={() => handleLogin("github")}
+        onPress={() => handleLogin("google")}
         variant="bordered"
         color="secondary"
       >
