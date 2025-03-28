@@ -18,13 +18,13 @@ export default function IndexPage() {
 
   return (
     <DefaultLayout>
-      <div className="ml-1.5 text-xl font-bold mb-4">
+      <div className="ml-1.5 text-xl font-bold mb-3">
         {user?.user_metadata.user_name.charAt(0).toUpperCase() +
           user?.user_metadata.user_name.slice(1)}
       </div>
 
       <div className="flex w-full flex-col">
-        <Tabs>
+        <Tabs isVertical={true}>
           <Tab key="Profile" title="Profile">
             <Card>
               <CardBody>TODO CAMPI PROFILE</CardBody>
