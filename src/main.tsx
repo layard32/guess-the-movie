@@ -13,7 +13,11 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <Router>
       <HeroProvider>
         <ReduxProvider store={store}>
-          <ToastProvider placement="top-center" toastOffset={3} />
+          <ToastProvider
+            placement="top-center"
+            toastOffset={3}
+            maxVisibleToasts={2}
+          />
           <App />
         </ReduxProvider>
       </HeroProvider>

@@ -40,6 +40,7 @@ export const Navbar = () => {
       timeout: 3000,
       shouldShowTimeoutProgress: true,
     });
+    console.log("ciao");
   };
 
   return (
@@ -105,7 +106,7 @@ export const Navbar = () => {
           {user ? (
             <>
               <Button> Profile </Button>
-              <Button onPress={() => dispatch(signOut())}> Log out </Button>
+              <Button onPress={handleLogout}> Log out </Button>
             </>
           ) : (
             <>
