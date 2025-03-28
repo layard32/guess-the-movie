@@ -8,7 +8,7 @@ import {
 } from "@heroui/modal";
 import { Button } from "@heroui/button";
 import Oauth from "./oauth";
-import UserForm from "./newUserForm";
+import NewUserForm from "./newUserForm";
 import {
   passwordValidation,
   emailValidation,
@@ -35,7 +35,7 @@ const signIn: React.FC = () => {
               </ModalHeader>
               <ModalBody>
                 <Oauth />
-                <UserForm
+                <NewUserForm
                   passwordValidation={passwordValidation}
                   emailValidation={emailValidation}
                   usernameValidation={nameValidation}

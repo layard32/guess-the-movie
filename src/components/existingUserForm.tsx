@@ -3,7 +3,7 @@ import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { useDispatch } from "react-redux";
-import { signup } from "@/state/thunks";
+import { login } from "@/state/thunks";
 import { AppDispatch } from "@/state/store";
 import { addToast } from "@heroui/toast";
 
@@ -14,41 +14,39 @@ interface Props {
   closeModal?: () => void;
 }
 
-const newUserForm: React.FC<Props> = ({
-  usernameValidation,
+const existingUserForm: React.FC<Props> = ({
   emailValidation,
   passwordValidation,
   closeModal,
 }: Props) => {
-  // gestione logica del form per sign up con email e password
+  // gestione logica del form per login con email e password
   const dispatch: AppDispatch = useDispatch();
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // utilizzo formdata per prendere i campi email, password ed username inseriti
+    // utilizzo formdata per prendere i campi email e password inseriti
     const formData = new FormData(e.currentTarget);
-    const username = formData.get("username") as string;
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
     // try catch per gestire gli errori di registrazione
     try {
-      dispatch(signup({ email, password }));
-      const result = await dispatch(signup({ email, password })).unwrap();
+      dispatch(login({ email, password }));
+      const result = await dispatch(login({ email, password })).unwrap();
+      console.log("result", result);
       if (result?.user) {
-        // se la registrazione è riuscita, chiudiamo messaggio e mostriamo il toast
+        // se il login è riuscito, chiudiamo messaggio e mostriamo il toast
         closeModal?.();
         addToast({
-          title: "Account successfully created",
-          description: "Check your email to confirm your account",
+          title: "You successfully logged in",
           color: "success",
           timeout: 3500,
           shouldShowTimeoutProgress: true,
         });
       }
     } catch (error: any) {
-      // se il signup fallisce mostriamo il toast con l'errore
+      // se il login fallisce mostriamo il toast con l'errore
       addToast({
-        title: "Error when creating the account",
+        title: "Error when logging in",
         description: error.message,
         color: "danger",
         timeout: 2500,
@@ -60,19 +58,6 @@ const newUserForm: React.FC<Props> = ({
   return (
     <>
       <Form className="w-full flex flex-col gap-4" onSubmit={onSubmit}>
-        <Input
-          isRequired
-          label="Username"
-          placeholder="Enter your username"
-          type="text"
-          labelPlacement="outside"
-          name="username"
-          validate={
-            usernameValidation
-              ? (value) => usernameValidation(value)
-              : undefined
-          }
-        />
         <Input
           isRequired
           label="Email"
@@ -105,4 +90,4 @@ const newUserForm: React.FC<Props> = ({
   );
 };
 
-export default newUserForm;
+export default existingUserForm;

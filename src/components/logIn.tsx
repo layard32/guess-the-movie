@@ -8,6 +8,8 @@ import {
 } from "@heroui/modal";
 import { Button } from "@heroui/button";
 import Oauth from "./oauth";
+import ExistingUserForm from "./existingUserForm";
+import { passwordValidation, emailValidation } from "@/state/userValidation";
 
 const logIn: React.FC = () => {
   // gestione del modal tramite heroui
@@ -15,15 +17,21 @@ const logIn: React.FC = () => {
 
   return (
     <div>
-      <Button onPress={onOpen}>Login</Button>
+      <Button onPress={onOpen}>Login </Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false}>
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Login</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">
+                Login with your account or your favorite social
+              </ModalHeader>
               <ModalBody>
                 <Oauth />
-                <p>LOGIN FORM TO DO</p>
+                <ExistingUserForm
+                  passwordValidation={passwordValidation}
+                  emailValidation={emailValidation}
+                  closeModal={onOpenChange}
+                />
               </ModalBody>
             </>
           )}
