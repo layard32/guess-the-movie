@@ -10,15 +10,41 @@ import { Button } from "@heroui/button";
 import Oauth from "./oauth";
 import ExistingUserForm from "./existingUserForm";
 import { passwordValidation, emailValidation } from "@/state/userValidation";
+import { Link } from "@heroui/link";
 
-const logIn: React.FC = () => {
+interface Props {
+  button?: boolean;
+  link?: boolean;
+}
+
+const logIn: React.FC<Props> = ({ button, link }: Props) => {
   // gestione del modal tramite heroui
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
     <div>
-      <Button onPress={onOpen}>Login </Button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false}>
+      {link && (
+        <Link
+          className="w-full"
+          onPress={onOpen}
+          href="#"
+          size="lg"
+          color="foreground"
+        >
+          Log in
+        </Link>
+      )}
+      {button && (
+        <Button className="w-full" onPress={onOpen}>
+          Log in
+        </Button>
+      )}
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        isDismissable={false}
+        placement="center"
+      >
         <ModalContent>
           {(onClose) => (
             <>

@@ -14,13 +14,34 @@ import {
   emailValidation,
   nameValidation,
 } from "@/state/userValidation";
+import { Link } from "@heroui/link";
 
-const signIn: React.FC = () => {
+interface Props {
+  button?: boolean;
+  link?: boolean;
+}
+
+const signIn: React.FC<Props> = ({ button, link }: Props) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
     <div>
-      <Button onPress={onOpen}>Register</Button>
+      {link && (
+        <Link
+          className="w-full"
+          onPress={onOpen}
+          href="#"
+          size="lg"
+          color="foreground"
+        >
+          Register
+        </Link>
+      )}
+      {button && (
+        <Button className="w-full" onPress={onOpen}>
+          Register
+        </Button>
+      )}
       <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
