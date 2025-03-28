@@ -19,10 +19,16 @@ const existingUserForm: React.FC<Props> = ({
   passwordValidation,
   closeModal,
 }: Props) => {
+  // per evitare spam di submit
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
   // gestione logica del form per login con email e password
   const dispatch: AppDispatch = useDispatch();
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // previene invio multiplo del form
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     // utilizzo formdata per prendere i campi email e password inseriti
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
@@ -51,6 +57,8 @@ const existingUserForm: React.FC<Props> = ({
         timeout: 2500,
         shouldShowTimeoutProgress: true,
       });
+    } finally {
+      setIsSubmitting(false); // reset dello stato di submitting
     }
   };
 

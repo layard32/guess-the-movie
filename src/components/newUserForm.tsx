@@ -27,7 +27,9 @@ const newUserForm: React.FC<Props> = ({
   const dispatch: AppDispatch = useDispatch();
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (isSubmitting) return; // previene invio multiplo del form
+    // previene invio multiplo del form
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     // utilizzo formdata per prendere i campi email, password ed username inseriti
     const formData = new FormData(e.currentTarget);
     const username = formData.get("username") as string;
