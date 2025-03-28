@@ -6,6 +6,8 @@ import { useDispatch } from "react-redux";
 import { signup } from "@/state/thunks";
 import { AppDispatch } from "@/state/store";
 import { addToast } from "@heroui/toast";
+import { Divider } from "@heroui/divider";
+import { Link } from "@heroui/link";
 
 interface Props {
   usernameValidation?: (value: string) => string | null;
@@ -106,7 +108,7 @@ const newUserForm: React.FC<Props> = ({
               : undefined
           }
         />
-        <Button type="submit" color="primary" className="mt-1 mb-2.5">
+        <Button type="submit" color="primary" className="mt-1">
           Submit
         </Button>
       </Form>

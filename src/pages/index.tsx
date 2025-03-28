@@ -10,7 +10,7 @@ export default function IndexPage() {
             {" "}
             TODO campi per partita locale{" "}
           </Tab>
-          <Tab key="Multi" title="Mutliplayer">
+          <Tab key="Multi" title="Multiplayer">
             {" "}
             TODO campi per partita multiplayer
           </Tab>
