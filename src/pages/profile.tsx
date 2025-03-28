@@ -3,6 +3,8 @@ import { useSelector } from "react-redux";
 import { selectUser } from "@/state/selectors";
 import { useLocation } from "wouter";
 import { useEffect } from "react";
+import { Tabs, Tab } from "@heroui/tabs";
+import { Card, CardBody } from "@heroui/card";
 
 export default function IndexPage() {
   // per sicurezza controllo se c'è un utente: se non c'è lo rimando alla home
@@ -16,9 +18,34 @@ export default function IndexPage() {
 
   return (
     <DefaultLayout>
-      <div className="ml-1.5 text-xl font-bold">
+      <div className="ml-1.5 text-xl font-bold mb-4">
         {user?.user_metadata.user_name.charAt(0).toUpperCase() +
           user?.user_metadata.user_name.slice(1)}
+      </div>
+
+      <div className="flex w-full flex-col">
+        <Tabs>
+          <Tab key="Profile" title="Profile">
+            <Card>
+              <CardBody>TODO CAMPI PROFILE</CardBody>
+            </Card>
+          </Tab>
+          <Tab key="LocalStat" title="Local Statistics">
+            <Card>
+              <CardBody>
+                TODO CAMPI STATISTICHE LOCALI DA FARE DOPO AVER DEFINITO IL DB
+              </CardBody>
+            </Card>
+          </Tab>
+          <Tab key="MultiStat" title="Multiplayer Statistics">
+            <Card>
+              <CardBody>
+                TODO CAMPI STATISTICHE MULTIPLAYER DA FARE DOPO AVER DEFINITO IL
+                DB
+              </CardBody>
+            </Card>
+          </Tab>
+        </Tabs>
       </div>
     </DefaultLayout>
   );
