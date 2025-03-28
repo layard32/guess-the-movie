@@ -3,7 +3,7 @@ import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { useDispatch } from "react-redux";
-import { login } from "@/state/thunks";
+import { login, fetchSession } from "@/state/thunks";
 import { AppDispatch } from "@/state/store";
 import { addToast } from "@heroui/toast";
 
@@ -32,9 +32,9 @@ const existingUserForm: React.FC<Props> = ({
     try {
       dispatch(login({ email, password }));
       const result = await dispatch(login({ email, password })).unwrap();
-      console.log("result", result);
       if (result?.user) {
-        // se il login è riuscito, chiudiamo messaggio e mostriamo il toast
+        // se il login è riuscito, fetchiamo la sessione, chiudiamo il modale e mostriamo il toast
+        await dispatch(fetchSession());
         closeModal?.();
         addToast({
           title: "You successfully logged in",
