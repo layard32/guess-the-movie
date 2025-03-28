@@ -19,6 +19,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/state/store";
 import { addToast } from "@heroui/toast";
 import { useState } from "react";
+import { useLocation } from "wouter";
 
 export const Navbar = () => {
   // prendo l'utente con useSelector
@@ -26,6 +27,12 @@ export const Navbar = () => {
 
   // dispatch per fare il logout
   const dispatch: AppDispatch = useDispatch();
+
+  // gestione navigazione verso profile con wouter
+  const [, navigate] = useLocation();
+  const goToProfile = () => {
+    navigate("/profile");
+  };
 
   // gestione del logout
   const [isMenuOpen, setIsMenuOpen] = useState(false); // per chiudere il menu dopo logout
@@ -105,7 +112,7 @@ export const Navbar = () => {
         <div className="hidden sm:flex gap-4 justify-start ml-2">
           {user ? (
             <>
-              <Button> Profile </Button>
+              <Button onPress={goToProfile}> Profile </Button>
               <Button onPress={handleLogout}> Log out </Button>
             </>
           ) : (

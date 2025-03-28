@@ -31,8 +31,9 @@ function App() {
     <>
       {/* switch consente di fare matching esclusivo (il primo corretto viene renderizzato; gli altri vengono ignorati) */}
       <Switch>
-        <Route path="/" component={IndexPage} />
+        <Route path="/profile" component={IndexPage} />
       </Switch>
+      <Route path="/" component={IndexPage} />
     </>
   );
 }
