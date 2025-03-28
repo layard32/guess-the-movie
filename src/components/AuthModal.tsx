@@ -23,19 +23,20 @@ const AuthModal: React.FC<Props> = ({
   isOpen,
   onOpenChange,
 }: Props) => {
-  // per gestire il cambio modale utilizzo uno stato che imposto inizialmente in base al props passato
-  const [isLogin, setIsLogin] = React.useState<boolean>();
-  useEffect(() => {
-    if (login) setIsLogin(true);
-    else setIsLogin(false);
-  }, []);
+  // per gestire il cambio modale utilizzo uno stato che imposto
+  // in base ai props e resetto alla chiusura del modale
+  const [isLogin, setIsLogin] = React.useState<boolean>(!!login);
+  const handleOpenChange = (isOpen: boolean) => {
+    onOpenChange();
+    setIsLogin(!!login);
+  };
 
   return (
     <>
       {signin && !isLogin && (
         <Modal
           isOpen={isOpen}
-          onOpenChange={onOpenChange}
+          onOpenChange={handleOpenChange}
           isDismissable={false}
           placement="center"
         >
@@ -73,7 +74,7 @@ const AuthModal: React.FC<Props> = ({
       {(login || isLogin) && (
         <Modal
           isOpen={isOpen}
-          onOpenChange={onOpenChange}
+          onOpenChange={handleOpenChange}
           isDismissable={false}
           placement="center"
         >

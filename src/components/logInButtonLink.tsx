@@ -31,7 +31,12 @@ const logIn: React.FC<Props> = ({ button, link }: Props) => {
           Log in
         </Button>
       )}
-      <AuthModal login={true} isOpen={isOpen} onOpenChange={onOpenChange} />
+      <AuthModal
+        login={true}
+        signin={false}
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+      />
     </div>
   );
 };
