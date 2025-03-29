@@ -1,14 +1,12 @@
 import DefaultLayout from "@/layouts/default";
-import { useSelector } from "react-redux";
-import { selectUser } from "@/state/selectors";
-import { useLocation } from "wouter";
-import { useEffect } from "react";
 import { Tabs, Tab } from "@heroui/tabs";
 import { Card, CardBody } from "@heroui/card";
+import { checkUserRedirect } from "@/hooks/checkUserRedirect";
 
 export default function IndexPage() {
   // per sicurezza controllo se c'è un utente: se non c'è lo rimando alla home
-  const user = useSelector(selectUser);
+  const user = checkUserRedirect("/");
+
   // prendo l'username, se ci sta, oppure il name
   const userName = user?.user_metadata.user_name
     ? user?.user_metadata.user_name.charAt(0).toUpperCase() +
@@ -17,11 +15,6 @@ export default function IndexPage() {
       ? user?.user_metadata.name.charAt(0).toUpperCase() +
         user?.user_metadata.name.slice(1)
       : "Guest";
-
-  const [, navigate] = useLocation();
-  useEffect(() => {
-    if (!user) navigate("/");
-  }, [user, navigate]);
 
   return (
     <DefaultLayout>
