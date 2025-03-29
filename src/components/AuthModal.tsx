@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Modal, ModalContent, ModalHeader, ModalBody } from "@heroui/modal";
 import Oauth from "./oauth";
 import NewUserForm from "./newUserForm";
@@ -9,10 +9,12 @@ import {
 } from "@/state/userValidation";
 import ExistingUserForm from "./existingUserForm";
 import { Link } from "@heroui/link";
+import ForgottenPasswordForm from "./forgottenPasswordForm";
 
 interface Props {
-  login?: boolean;
-  signin?: boolean;
+  login: boolean;
+  signin: boolean;
+  forgetPassword: boolean;
   isOpen: boolean;
   onOpenChange: () => void;
 }
@@ -21,19 +23,36 @@ const AuthModal: React.FC<Props> = ({
   login,
   signin,
   isOpen,
+  forgetPassword,
   onOpenChange,
 }: Props) => {
   // per gestire il cambio modale utilizzo uno stato che imposto
   // in base ai props e resetto alla chiusura del modale
-  const [isLogin, setIsLogin] = React.useState<boolean>(!!login);
+  const [currentModal, setCurrentModal] = React.useState<string>(
+    login
+      ? "login"
+      : signin
+        ? "signin"
+        : forgetPassword
+          ? "forgetPassword"
+          : "signin"
+  );
   const handleOpenChange = (isOpen: boolean) => {
     onOpenChange();
-    setIsLogin(!!login);
+    setCurrentModal(
+      login
+        ? "login"
+        : signin
+          ? "signin"
+          : forgetPassword
+            ? "forgetPassword"
+            : "signin"
+    );
   };
 
   return (
     <>
-      {signin && !isLogin && (
+      {currentModal == "signin" && (
         <Modal
           isOpen={isOpen}
           onOpenChange={handleOpenChange}
@@ -45,8 +64,18 @@ const AuthModal: React.FC<Props> = ({
               <>
                 <ModalHeader className="flex flex-col gap-1">
                   Create a new account or sign in with your favorite social
+                  <p className="text-small">
+                    Already have an account?{" "}
+                    <Link
+                      onPress={() => setCurrentModal("login")}
+                      className="cursor-pointer"
+                    >
+                      {" "}
+                      Log in{" "}
+                    </Link>
+                  </p>
                 </ModalHeader>
-                <ModalBody>
+                <ModalBody className="mb-2.5">
                   <Oauth />
                   <NewUserForm
                     passwordValidation={passwordValidation}
@@ -54,14 +83,14 @@ const AuthModal: React.FC<Props> = ({
                     usernameValidation={nameValidation}
                     closeModal={onOpenChange}
                   />
-                  <p className="text-small mb-2.5">
-                    Already have an account?{" "}
+                  <p className="text-small">
+                    Forget your password?{" "}
                     <Link
-                      onPress={() => setIsLogin(true)}
+                      onPress={() => setCurrentModal("forgetPassword")}
                       className="cursor-pointer"
                     >
                       {" "}
-                      Log in{" "}
+                      Reset it{" "}
                     </Link>
                   </p>
                 </ModalBody>
@@ -71,7 +100,7 @@ const AuthModal: React.FC<Props> = ({
         </Modal>
       )}
 
-      {(login || isLogin) && (
+      {currentModal == "login" && (
         <Modal
           isOpen={isOpen}
           onOpenChange={handleOpenChange}
@@ -83,24 +112,69 @@ const AuthModal: React.FC<Props> = ({
               <>
                 <ModalHeader className="flex flex-col gap-1">
                   Login with your account or your favorite social
-                </ModalHeader>
-                <ModalBody>
-                  <Oauth />
-                  <ExistingUserForm
-                    passwordValidation={passwordValidation}
-                    emailValidation={emailValidation}
-                    closeModal={onOpenChange}
-                  />
-                  <p className="text-small mb-2.5">
+                  <p className="text-small">
                     Don't have an account?{" "}
                     <Link
-                      onPress={() => setIsLogin(false)}
+                      onPress={() => setCurrentModal("signin")}
                       className="cursor-pointer"
                     >
                       {" "}
                       Register{" "}
                     </Link>
                   </p>
+                </ModalHeader>
+                <ModalBody className="mb-2.5">
+                  <Oauth />
+                  <ExistingUserForm
+                    passwordValidation={passwordValidation}
+                    emailValidation={emailValidation}
+                    closeModal={onOpenChange}
+                  />
+                  <p className="text-small">
+                    Forget your password?{" "}
+                    <Link
+                      onPress={() => setCurrentModal("forgetPassword")}
+                      className="cursor-pointer"
+                    >
+                      {" "}
+                      Reset it{" "}
+                    </Link>
+                  </p>
+                </ModalBody>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+      )}
+
+      {currentModal == "forgetPassword" && (
+        <Modal
+          isOpen={isOpen}
+          onOpenChange={handleOpenChange}
+          isDismissable={false}
+          placement="center"
+        >
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">
+                  Reset your password
+                  <p className="text-small">
+                    Go back to{" "}
+                    <Link
+                      onPress={() => setCurrentModal("login")}
+                      className="cursor-pointer"
+                    >
+                      {" "}
+                      login{" "}
+                    </Link>
+                  </p>
+                </ModalHeader>
+                <ModalBody className="mb-2.5">
+                  <ForgottenPasswordForm
+                    closeModal={onOpenChange}
+                    emailValidation={emailValidation}
+                  />
                 </ModalBody>
               </>
             )}

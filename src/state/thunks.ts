@@ -53,3 +53,15 @@ export const signOut = createAsyncThunk("auth/signOut", async () => {
   await supabase.auth.signOut();
   return null;
 });
+
+// ask for password reset email
+export const sendPasswordResetEmail = createAsyncThunk(
+  "auth/sendPasswordResetEmail",
+  async ({ email }: { email: string }) => {
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: "http://127.0.0.1:5173/reset-password",
+    });
+    if (error) throw new Error(error.message);
+    return data;
+  }
+);

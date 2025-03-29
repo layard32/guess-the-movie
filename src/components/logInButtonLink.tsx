@@ -34,6 +34,7 @@ const logIn: React.FC<Props> = ({ button, link }: Props) => {
       <AuthModal
         login={true}
         signin={false}
+        forgetPassword={false}
         isOpen={isOpen}
         onOpenChange={onOpenChange}
       />
