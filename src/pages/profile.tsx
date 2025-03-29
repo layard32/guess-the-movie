@@ -9,7 +9,14 @@ import { Card, CardBody } from "@heroui/card";
 export default function IndexPage() {
   // per sicurezza controllo se c'è un utente: se non c'è lo rimando alla home
   const user = useSelector(selectUser);
-  console.log(user);
+  // prendo l'username, se ci sta, oppure il name
+  const userName = user?.user_metadata.user_name
+    ? user?.user_metadata.user_name.charAt(0).toUpperCase() +
+      user?.user_metadata.user_name.slice(1)
+    : user?.user_metadata.name
+      ? user?.user_metadata.name.charAt(0).toUpperCase() +
+        user?.user_metadata.name.slice(1)
+      : "Guest";
 
   const [, navigate] = useLocation();
   useEffect(() => {
@@ -18,10 +25,7 @@ export default function IndexPage() {
 
   return (
     <DefaultLayout>
-      <div className="ml-1.5 text-xl font-bold mb-3">
-        {user?.user_metadata.user_name.charAt(0).toUpperCase() +
-          user?.user_metadata.user_name.slice(1)}
-      </div>
+      <div className="ml-1.5 text-xl font-bold mb-3">{userName}</div>
 
       <div className="flex w-full flex-col">
         <Tabs isVertical={true}>
