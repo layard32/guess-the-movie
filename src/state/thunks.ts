@@ -59,7 +59,7 @@ export const sendPasswordResetEmail = createAsyncThunk(
   "auth/sendPasswordResetEmail",
   async ({ email }: { email: string }) => {
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: "http://127.0.0.1:5173/reset-password",
+      redirectTo: "http://127.0.0.1:5173/reset",
     });
     if (error) throw new Error(error.message);
     return data;

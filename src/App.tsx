@@ -1,6 +1,7 @@
 import { Route, Switch } from "wouter";
 import IndexPage from "@/pages/index";
 import ProfilePage from "@/pages/profile";
+import ResetPage from "@/pages/resetPassword";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { fetchSession } from "@/state/thunks";
@@ -34,6 +35,7 @@ function App() {
       <Switch>
         <Route path="/" component={IndexPage} />
         <Route path="/profile" component={ProfilePage} />
+        <Route path="/reset" component={ResetPage} />
         <Route path="*" component={IndexPage} />
       </Switch>
     </>

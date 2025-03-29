@@ -2,15 +2,15 @@ import React from "react";
 import { useDisclosure } from "@heroui/modal";
 import { Button } from "@heroui/button";
 import { Link } from "@heroui/link";
-import AuthModal from "./AuthModal";
+import AuthModal from "./authModal";
 
 interface Props {
   button?: boolean;
   link?: boolean;
 }
 
-const logIn: React.FC<Props> = ({ button, link }: Props) => {
-  // gestione del modal tramite heroui
+const signIn: React.FC<Props> = ({ button, link }: Props) => {
+  // per la gestione del modale di heroui
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
@@ -23,17 +23,17 @@ const logIn: React.FC<Props> = ({ button, link }: Props) => {
           size="lg"
           color="foreground"
         >
-          Log in
+          Register
         </Link>
       )}
       {button && (
         <Button className="w-full" onPress={onOpen}>
-          Log in
+          Register
         </Button>
       )}
       <AuthModal
-        login={true}
-        signin={false}
+        signin={true}
+        login={false}
         forgetPassword={false}
         isOpen={isOpen}
         onOpenChange={onOpenChange}
@@ -42,4 +42,4 @@ const logIn: React.FC<Props> = ({ button, link }: Props) => {
   );
 };
 
-export default logIn;
+export default signIn;

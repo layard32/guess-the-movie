@@ -12,8 +12,8 @@ import { Logo } from "@/components/icons";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/state/selectors";
 import { Button } from "@heroui/button";
-import SignIn from "./signInButtonLink";
-import LogIn from "./logInButtonLink";
+import SignInButtonLink from "./authComponents/signInButtonLink";
+import LogInButtonLink from "./authComponents/logInButtonLink";
 import { signOut } from "@/state/thunks";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/state/store";
@@ -98,12 +98,12 @@ export const Navbar = () => {
             <>
               <NavbarMenuItem>
                 <Link className="w-full" href="#" size="lg">
-                  <SignIn link={true} />
+                  <SignInButtonLink link={true} />
                 </Link>
               </NavbarMenuItem>
               <NavbarMenuItem>
                 <Link className="w-full" href="#" size="lg">
-                  <LogIn link={true} />
+                  <LogInButtonLink link={true} />
                 </Link>
               </NavbarMenuItem>
             </>
@@ -117,8 +117,8 @@ export const Navbar = () => {
             </>
           ) : (
             <>
-              <SignIn button={true} />
-              <LogIn button={true} />
+              <SignInButtonLink button={true} />
+              <LogInButtonLink button={true} />
             </>
           )}
         </div>
