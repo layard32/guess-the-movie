@@ -65,3 +65,15 @@ export const sendPasswordResetEmail = createAsyncThunk(
     return data;
   }
 );
+
+// actual password reset
+export const resetPassword = createAsyncThunk(
+  "auth/resetPassword",
+  async ({ new_password }: { new_password: string }) => {
+    const { data, error } = await supabase.auth.updateUser({
+      password: new_password,
+    });
+    if (error) throw new Error(error.message);
+    return data;
+  }
+);

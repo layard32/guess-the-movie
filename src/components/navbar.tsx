@@ -47,7 +47,6 @@ export const Navbar = () => {
       timeout: 3000,
       shouldShowTimeoutProgress: true,
     });
-    console.log("ciao");
   };
 
   return (
@@ -66,8 +65,8 @@ export const Navbar = () => {
             href="/"
           >
             {/* TODO: cambiare logo */}
-            <Logo className="mt-1" />
-            <p className="font-bold text-inherit text-2xl">Movie Guesser</p>
+            <Logo className="sm:mt-1" />
+            <p className="font-bold text-inherit sm:text-2xl">Movie Guesser</p>
           </Link>
         </NavbarBrand>
       </NavbarContent>

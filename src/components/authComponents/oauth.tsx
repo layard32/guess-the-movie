@@ -16,7 +16,7 @@ const oauth = () => {
   const handleLogin = async (provider: Provider) => {
     dispatch(loginWithOAuth({ provider }));
     // imposto una flag del local storage su true
-    // così da mostrare un toast grazie all'use effect in app.tsx
+    // così da mostrare un toast dopo reindirizzamento grazie all'use effect in app.tsx
     localStorage.setItem("loginSuccess", "true");
   };
 

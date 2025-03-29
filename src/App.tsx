@@ -16,7 +16,7 @@ function App() {
     dispatch(fetchSession());
   }, [dispatch]);
 
-  // gestisco il login dopo oauth (quindi dopo callback)
+  // gestisco il toast dopo i rendirizzamenti di oauth
   useEffect(() => {
     const loginSuccess = localStorage.getItem("loginSuccess");
     if (loginSuccess) {

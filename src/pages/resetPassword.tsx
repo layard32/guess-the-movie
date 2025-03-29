@@ -1,10 +1,13 @@
 import React from "react";
 import DefaultLayout from "@/layouts/default";
+import ResetPasswordForm from "@/components/authComponents/resetPasswordForm";
 
 const resetPassword = () => {
   return (
     <DefaultLayout>
-      <div className="flex w-full flex-col justify-center items-center"></div>
+      <div className="w-full flex flex-col items-center justify-center">
+        <ResetPasswordForm />
+      </div>
     </DefaultLayout>
   );
 };
