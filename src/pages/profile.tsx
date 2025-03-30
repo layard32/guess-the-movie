@@ -1,20 +1,11 @@
 import DefaultLayout from "@/layouts/default";
 import { Tabs, Tab } from "@heroui/tabs";
 import { Card, CardBody } from "@heroui/card";
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
-import { selectUser } from "../state/selectors";
-import { useLocation } from "wouter";
-import { selectAuthLoading } from "../state/selectors";
+import authRedirect from "../hooks/authRedirect";
 
 export default function ProfilePage() {
   // controllo se c'è un utente: se non c'è lo rimando alla home`
-  const user = useSelector(selectUser); // Get the user from Redux
-  const loading = useSelector(selectAuthLoading); // Get the loading state from Redux
-  const [, navigate] = useLocation();
-  useEffect(() => {
-    if (!loading && !user) navigate("/");
-  }, []);
+  const user = authRedirect("/");
 
   // prendo l'username, se ci sta, oppure il name
   const userName = user?.user_metadata.user_name

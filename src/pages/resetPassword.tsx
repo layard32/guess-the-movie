@@ -1,18 +1,11 @@
 import React, { useEffect } from "react";
 import DefaultLayout from "@/layouts/default";
 import ResetPasswordForm from "@/components/authComponents/resetPasswordForm";
-import { useSelector } from "react-redux";
-import { selectUser } from "../state/selectors";
-import { useLocation } from "wouter";
+import authRedirect from "../hooks/authRedirect";
 
 const resetPassword = () => {
   // controllo se c'è un utente: se non c'è lo rimando alla home`
-  const user = useSelector(selectUser);
-  const [, navigate] = useLocation();
-  useEffect(() => {
-    console.log(user);
-    if (!user) navigate("/");
-  }, []);
+  const user = authRedirect("/");
 
   return (
     <DefaultLayout>
