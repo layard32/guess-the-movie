@@ -7,14 +7,20 @@ import { useDispatch } from "react-redux";
 import { fetchSession } from "@/state/thunks";
 import { AppDispatch } from "@/state/store";
 import { addToast } from "@heroui/toast";
+import { useRef } from "react";
 
 function App() {
   const dispatch: AppDispatch = useDispatch();
 
   // gestisco la sessione tramite thunks e store
+  // ed utilizo useref per evitare di dispatchare 2 volte la funzione
+  const hasFetchedSession = useRef(false);
   useEffect(() => {
-    dispatch(fetchSession());
-  }, [dispatch]);
+    if (!hasFetchedSession.current) {
+      hasFetchedSession.current = true;
+      dispatch(fetchSession());
+    }
+  }, []);
 
   // gestisco il toast dopo i rendirizzamenti di oauth
   useEffect(() => {
