@@ -2,19 +2,14 @@ import DefaultLayout from "@/layouts/default";
 import { Tabs, Tab } from "@heroui/tabs";
 import { Card, CardBody } from "@heroui/card";
 import authRedirect from "../hooks/authRedirect";
+import ProfileFieldsForm from "@/components/profileComponents/profileFieldsForm";
+import giveUsername from "@/hooks/giveUsername";
 
 export default function ProfilePage() {
   // controllo se c'è un utente: se non c'è lo rimando alla home`
   const user = authRedirect("/");
-
-  // prendo l'username, se ci sta, oppure il name
-  const userName = user?.user_metadata.user_name
-    ? user?.user_metadata.user_name.charAt(0).toUpperCase() +
-      user?.user_metadata.user_name.slice(1)
-    : user?.user_metadata.name
-      ? user?.user_metadata.name.charAt(0).toUpperCase() +
-        user?.user_metadata.name.slice(1)
-      : "Guest";
+  // prendo l'username dal custom hook
+  const userName = giveUsername();
 
   return (
     <DefaultLayout>
@@ -24,7 +19,9 @@ export default function ProfilePage() {
         <Tabs isVertical={true}>
           <Tab key="Profile" title="Profile">
             <Card>
-              <CardBody>TODO CAMPI PROFILE</CardBody>
+              <CardBody>
+                <ProfileFieldsForm />
+              </CardBody>
             </Card>
           </Tab>
           <Tab key="LocalStat" title="Local Statistics">
