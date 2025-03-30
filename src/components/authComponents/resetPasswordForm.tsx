@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
@@ -14,7 +14,7 @@ const resetPasswordForm = () => {
   const [, navigate] = useLocation();
 
   // per evitare spam di submit
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // gestione logica del form per sign up con email e password
   const dispatch: AppDispatch = useDispatch();
@@ -56,10 +56,17 @@ const resetPasswordForm = () => {
     }
   };
 
+  // gestisco in realtime password e confirm password per applicare una custom validation su entrambi
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const handlePasswordValidation = () => {
+    return passwordValidation(password, confirmPassword);
+  };
+
   return (
     <>
       <Form
-        className="w-1/4 flex flex-col gap-4 justify-center items-center"
+        className="flex flex-col gap-4 justify-center items-center"
         onSubmit={onSubmit}
       >
         <Input
@@ -69,11 +76,22 @@ const resetPasswordForm = () => {
           type="password"
           labelPlacement="outside"
           name="password"
+          onChange={(e) => setPassword(e.target.value)}
           validate={
             passwordValidation
               ? (value) => passwordValidation(value)
               : undefined
           }
+        />
+        <Input
+          isRequired
+          label="Confirm new password"
+          placeholder="Enter your new password"
+          type="password"
+          labelPlacement="outside"
+          name="confirmPassword"
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          validate={handlePasswordValidation}
         />
         <Button type="submit" color="primary" className="mt-1">
           Reset the password

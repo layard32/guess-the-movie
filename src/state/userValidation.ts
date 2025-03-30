@@ -1,9 +1,11 @@
-export const passwordValidation = (password: string) => {
+export const passwordValidation = (password: string, confirmPassword?: string) => {
     if (password.length < 8) {
         return "Password must be at least 8 characters long";
     } else if (password.length > 50) {
         return "Password must be at most 50 characters long";
-    }   
+    } else if (confirmPassword && (password !== confirmPassword)) {
+        return "Passwords do not match";
+    }
     return null;
 };
 
