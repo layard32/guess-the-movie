@@ -5,8 +5,8 @@ import { selectUser, selectAuthLoading } from "../state/selectors";
 
 // custom hooks per reindirizzare a redirectTo se l'utente non è loggato
 const authRedirect = (redirectTo: string = "/") => {
-    const user = useSelector(selectUser); // Get the user from Redux
-    const loading = useSelector(selectAuthLoading); // Get the loading state from Redux
+    const user = useSelector(selectUser); 
+    const loading = useSelector(selectAuthLoading); 
     const [, navigate] = useLocation();
     useEffect(() => {
         // se non c'è utente e non si sta caricando

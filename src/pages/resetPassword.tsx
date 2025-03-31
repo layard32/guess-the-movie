@@ -5,8 +5,9 @@ import authRedirect from "../hooks/authRedirect";
 import { Card, CardBody } from "@heroui/card";
 
 const resetPassword = () => {
-  // controllo se c'è un utente: se non c'è lo rimando alla home`
-  const user = authRedirect("/");
+  // controllo se c'è un utente: se non c'è lo rimando alla home
+  // TODO: fixare il erdirect, perché rompe il magic link
+  // const user = authRedirect("/");
 
   return (
     <DefaultLayout>

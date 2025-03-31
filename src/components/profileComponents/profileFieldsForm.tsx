@@ -166,10 +166,20 @@ const profileFieldsForm = () => {
       <div className="-mt-3.5">
         {isEditable ? (
           <>
-            <Button type="submit" color="secondary" className="mr-4">
+            <Button
+              type="submit"
+              color="primary"
+              className="mr-4"
+              variant="bordered"
+            >
               Apply changes
             </Button>
-            <Button type="reset" color="danger" onPress={handleReset}>
+            <Button
+              type="reset"
+              color="secondary"
+              onPress={handleReset}
+              variant="bordered"
+            >
               Discard
             </Button>
           </>
@@ -177,6 +187,7 @@ const profileFieldsForm = () => {
           <Button
             type="button"
             color="primary"
+            variant="bordered"
             onClick={(e) => {
               e.preventDefault();
               setIsEditable((prevState) => !prevState);

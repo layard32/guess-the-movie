@@ -32,9 +32,7 @@ const forgottenPasswordForm: React.FC<Props> = ({
 
     // try catch per gestire errori con api
     try {
-      const result = await dispatch(
-        sendPasswordResetEmail({ email: email })
-      ).unwrap();
+      dispatch(sendPasswordResetEmail({ email: email }));
       // a prescindere dal risultato, mostriamo un modale di successo
       // se la registrazione è riuscita, chiudiamo messaggio e mostriamo il toast
       closeModal?.();
@@ -46,7 +44,10 @@ const forgottenPasswordForm: React.FC<Props> = ({
         shouldShowTimeoutProgress: true,
       });
     } finally {
-      setIsSubmitting(false); // reset dello stato di submitting
+      // introduco un delay di 3 secondi
+      setTimeout(() => {
+        setIsSubmitting(false); // reset dello stato di submitting
+      }, 3000);
     }
   };
 
