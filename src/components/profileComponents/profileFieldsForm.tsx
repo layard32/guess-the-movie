@@ -14,14 +14,21 @@ import { addToast } from "@heroui/toast";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/state/store";
 import { updateUser } from "@/state/thunks";
+import { Tooltip } from "@heroui/tooltip";
 
 const profileFieldsForm = () => {
+  // salvo i reali email ed username
+  const realEmail = useSelector(selectUser)?.email;
+  const realUsername = giveUsername();
   // prendo email ed username dall'utente
   const user = useSelector(selectUser);
-  const [email, setEmail] = useState(user?.email);
-  const [username, setUsername] = useState(giveUsername());
-  const [password, setPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [email, setEmail] = useState(realEmail);
+  const [username, setUsername] = useState(realUsername);
+  // genero una stringa randomica per password
+  const randomPassword = Math.random().toString(36).slice(-8);
+  const [password, setPassword] = useState<string>(randomPassword);
+  const [confirmPassword, setConfirmPassword] =
+    useState<string>(randomPassword);
 
   // per gestire editabilità dei campi
   const [isEditable, setIsEditable] = useState<boolean>(false);
@@ -74,6 +81,15 @@ const profileFieldsForm = () => {
     }
   };
 
+  // gestione logica discard button
+  const handleReset = () => {
+    setEmail(realEmail);
+    setUsername(realUsername);
+    setPassword(randomPassword);
+    setConfirmPassword(randomPassword);
+    setIsEditable((prevState) => !prevState);
+  };
+
   return (
     <Form
       className="w-full min-w-[500px] flex flex-col gap-4"
@@ -93,21 +109,26 @@ const profileFieldsForm = () => {
         }}
         validate={nameValidation ? (value) => nameValidation(value) : undefined}
       />
-      <Input
-        isRequired
-        label="Email"
-        value={email}
-        type="text"
-        labelPlacement="inside"
-        name="email"
-        isDisabled={!isEditable}
-        onChange={(e) => {
-          setEmail(e.target.value);
-        }}
-        validate={
-          emailValidation ? (value) => emailValidation(value) : undefined
-        }
-      />
+      <Tooltip
+        content="If you change the email, you will need to confirm both emails"
+        color="secondary"
+      >
+        <Input
+          isRequired
+          label="Email"
+          value={email}
+          type="text"
+          labelPlacement="inside"
+          name="email"
+          isDisabled={!isEditable}
+          onChange={(e) => {
+            setEmail(e.target.value);
+          }}
+          validate={
+            emailValidation ? (value) => emailValidation(value) : undefined
+          }
+        />
+      </Tooltip>
       <div className="flex gap-4 w-full">
         <Input
           className="max-w-[48%]"
@@ -147,14 +168,22 @@ const profileFieldsForm = () => {
       <div className="basis-full h-0 w-0"> </div>
       <div className="-mt-3.5">
         {isEditable ? (
-          <Button type="submit" color="secondary">
-            Apply changes
-          </Button>
+          <>
+            <Button type="submit" color="secondary" className="mr-4">
+              Apply changes
+            </Button>
+            <Button type="reset" color="danger" onPress={handleReset}>
+              Discard
+            </Button>
+          </>
         ) : (
           <Button
             type="button"
             color="primary"
-            onPress={() => setIsEditable((prevState) => !prevState)}
+            onClick={(e) => {
+              e.preventDefault();
+              setIsEditable((prevState) => !prevState);
+            }}
           >
             Edit
           </Button>

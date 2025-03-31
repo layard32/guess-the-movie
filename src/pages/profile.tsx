@@ -16,7 +16,7 @@ export default function ProfilePage() {
       <div className="ml-1.5 text-xl font-bold mb-3">{userName}</div>
 
       <div className="flex w-full flex-col">
-        <Tabs isVertical={true}>
+        <Tabs isVertical={true} className="mr-2">
           <Tab key="Profile" title="Profile">
             <Card>
               <CardBody>
