@@ -77,7 +77,12 @@ export const Navbar = () => {
           {user ? (
             <>
               <NavbarMenuItem>
-                <Link className="w-full" href="#" size="lg" color="foreground">
+                <Link
+                  className="w-full"
+                  size="lg"
+                  color="foreground"
+                  onPress={goToProfile}
+                >
                   Profile
                 </Link>
               </NavbarMenuItem>

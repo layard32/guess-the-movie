@@ -91,10 +91,7 @@ const profileFieldsForm = () => {
   };
 
   return (
-    <Form
-      className="w-full min-w-[500px] flex flex-col gap-4"
-      onSubmit={onSubmit}
-    >
+    <Form className="w-full flex flex-col gap-4" onSubmit={onSubmit}>
       {" "}
       <Input
         isRequired
