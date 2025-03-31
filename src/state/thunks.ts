@@ -77,3 +77,19 @@ export const resetPassword = createAsyncThunk(
     return data;
   }
 );
+
+// update email, password and username of the user
+export const updateUser = createAsyncThunk(
+  "auth/updateUser",
+  async ({ email, password, username }: { email?: string; password?: string; username?: string }) => {
+    const { data, error } = await supabase.auth.updateUser({
+      email: email,
+      password: password,
+      data: {
+        user_name: username,
+      },
+    });
+    if (error) throw new Error(error.message);
+    return data;
+  }
+);

@@ -22,7 +22,6 @@ const newUserForm: React.FC<Props> = ({
 }: Props) => {
   // per evitare spam di submit
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-
   // gestione logica del form per sign up con email e password
   const dispatch: AppDispatch = useDispatch();
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
