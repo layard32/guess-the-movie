@@ -2,10 +2,7 @@ import React from "react";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
-import { useDispatch } from "react-redux";
-import { login, fetchSession } from "@/state/thunks";
-import { AppDispatch } from "@/state/store";
-import { addToast } from "@heroui/toast";
+import { login } from "@/state/thunks";
 import onSubmitSupabase from "@/hooks/onSubmitSupabase";
 
 interface Props {
@@ -23,14 +20,18 @@ const existingUserForm: React.FC<Props> = ({
   // per evitare spam di submit
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
-  const onSubmit = onSubmitSupabase({
-    isSubmitting: isSubmitting,
-    setIsSubmitting: setIsSubmitting,
-    thunk: login,
-    toastSuccessTitle: "Successfully logged in",
-    toastErrorTitle: "Error when logging in",
-    closingAction: closeModal,
-  });
+  // uso callback per evitare di ricreare la funzione ad ogni render
+  const onSubmit = React.useCallback(
+    onSubmitSupabase({
+      isSubmitting: isSubmitting,
+      setIsSubmitting: setIsSubmitting,
+      thunk: login,
+      toastSuccessTitle: "Successfully logged in",
+      toastErrorTitle: "Error when logging in",
+      closingAction: closeModal,
+    }),
+    [isSubmitting, setIsSubmitting, closeModal]
+  );
 
   return (
     <>
@@ -60,7 +61,7 @@ const existingUserForm: React.FC<Props> = ({
           }
         />
         <Button type="submit" color="primary" className="mt-1">
-          Submit
+          Login
         </Button>
       </Form>
     </>

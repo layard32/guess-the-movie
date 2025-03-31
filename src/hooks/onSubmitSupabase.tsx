@@ -34,6 +34,7 @@ const onSubmitSupabase = ({
     if (isSubmitting) return;
     setIsSubmitting(true);
     console.log("ajo");
+
     // utilizzo formdata per prendere i campi email e password inseriti
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
@@ -74,7 +75,10 @@ const onSubmitSupabase = ({
         shouldShowTimeoutProgress: true,
       });
     } finally {
-      setIsSubmitting(false); // reset dello stato di submitting
+      // introduco un delay di 3 secondi
+      setTimeout(() => {
+        setIsSubmitting(false); // reset dello stato di submitting
+      }, 3000);
     }
   };
 

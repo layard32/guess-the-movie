@@ -36,9 +36,14 @@ export const Navbar = () => {
 
   // gestione del logout
   const [isMenuOpen, setIsMenuOpen] = useState(false); // per chiudere il menu dopo logout
-  // TODO: EVITARE SPAM DI LOGOUT
+  // per evitare spam di logout
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const handleLogout = () => {
-    dispatch(signOut());
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    dispatch(signOut()).finally(() => {
+      setIsSubmitting(false);
+    });
     // chiudo il navbar menu
     setIsMenuOpen(false);
     // aggiungo un toast
