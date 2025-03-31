@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { login, fetchSession } from "@/state/thunks";
 import { AppDispatch } from "@/state/store";
 import { addToast } from "@heroui/toast";
+import onSubmitSupabase from "@/hooks/onSubmitSupabase";
 
 interface Props {
   usernameValidation?: (value: string) => string | null;
@@ -22,45 +23,14 @@ const existingUserForm: React.FC<Props> = ({
   // per evitare spam di submit
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
-  // gestione logica del form per login con email e password
-  const dispatch: AppDispatch = useDispatch();
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // previene invio multiplo del form
-    if (isSubmitting) return;
-    setIsSubmitting(true);
-    // utilizzo formdata per prendere i campi email e password inseriti
-    const formData = new FormData(e.currentTarget);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-
-    // try catch per gestire gli errori di registrazione
-    try {
-      const result = await dispatch(login({ email, password })).unwrap();
-      if (result?.user) {
-        // se il login è riuscito, fetchiamo la sessione, chiudiamo il modale e mostriamo il toast
-        await dispatch(fetchSession());
-        closeModal?.();
-        addToast({
-          title: "Successfully logged in",
-          color: "success",
-          timeout: 3500,
-          shouldShowTimeoutProgress: true,
-        });
-      }
-    } catch (error: any) {
-      // se il login fallisce mostriamo il toast con l'errore
-      addToast({
-        title: "Error when logging in",
-        description: error.message,
-        color: "danger",
-        timeout: 2500,
-        shouldShowTimeoutProgress: true,
-      });
-    } finally {
-      setIsSubmitting(false); // reset dello stato di submitting
-    }
-  };
+  const onSubmit = onSubmitSupabase({
+    isSubmitting: isSubmitting,
+    setIsSubmitting: setIsSubmitting,
+    thunk: login,
+    toastSuccessTitle: "Successfully logged in",
+    toastErrorTitle: "Error when logging in",
+    closingAction: closeModal,
+  });
 
   return (
     <>

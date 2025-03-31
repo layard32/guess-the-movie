@@ -50,7 +50,7 @@ export default function ProfilePage() {
               </CardBody>
             </Card>
           </Tab>
-          <Tab key="MultiStat" title="Online Statistics">
+          <Tab key="MultiStat" title="Online Statistics" isDisabled={true}>
             <Card>
               <CardBody>
                 TODO CAMPI STATISTICHE MULTIPLAYER DA FARE DOPO AVER DEFINITO IL

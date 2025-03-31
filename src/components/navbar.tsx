@@ -36,6 +36,7 @@ export const Navbar = () => {
 
   // gestione del logout
   const [isMenuOpen, setIsMenuOpen] = useState(false); // per chiudere il menu dopo logout
+  // TODO: EVITARE SPAM DI LOGOUT
   const handleLogout = () => {
     dispatch(signOut());
     // chiudo il navbar menu
@@ -78,7 +79,7 @@ export const Navbar = () => {
             <>
               <NavbarMenuItem>
                 <Link
-                  className="w-full"
+                  className="w-full cursor-pointer"
                   size="lg"
                   color="foreground"
                   onPress={goToProfile}
@@ -101,14 +102,10 @@ export const Navbar = () => {
           ) : (
             <>
               <NavbarMenuItem>
-                <Link className="w-full" href="#" size="lg">
-                  <SignInButtonLink link={true} />
-                </Link>
+                <SignInButtonLink link={true} key="signin" />
               </NavbarMenuItem>
               <NavbarMenuItem>
-                <Link className="w-full" href="#" size="lg">
-                  <LogInButtonLink link={true} />
-                </Link>
+                <LogInButtonLink link={true} key="login" />
               </NavbarMenuItem>
             </>
           )}
