@@ -6,8 +6,11 @@ import { IoIosPhonePortrait } from "react-icons/io";
 import { MdGroups3 } from "react-icons/md";
 import { PiListNumbers } from "react-icons/pi";
 import LocalGameSearch from "./localGameSearch";
+import { useState } from "react";
 
 const localGameForm = () => {
+  const [numberOfRounds, setNumberOfRounds] = useState("3");
+
   return (
     <>
       <Form className="flex flex-col gap-4 justify-center items-center py-2.5">
@@ -60,7 +63,7 @@ const localGameForm = () => {
         </Select>
         <Select
           isRequired
-          defaultSelectedKeys={["3"]}
+          defaultSelectedKeys={[numberOfRounds]}
           label="Number of rounds"
           className="w-4/5"
           color="secondary"
@@ -68,6 +71,10 @@ const localGameForm = () => {
           description="Choose the number of rounds"
           startContent={<PiListNumbers />}
           size="lg"
+          selectedKeys={[numberOfRounds]}
+          onSelectionChange={(keys) =>
+            setNumberOfRounds(Array.from(keys)[0] as string)
+          }
         >
           <SelectItem key="2" textValue="2">
             <div className="flex gap-2 items-center">
@@ -103,7 +110,7 @@ const localGameForm = () => {
       </Form>
 
       {/* componente col pulsante e la logica per gestire la chiamata APi */}
-      <LocalGameSearch />
+      <LocalGameSearch numberOfRounds={numberOfRounds} />
     </>
   );
 };

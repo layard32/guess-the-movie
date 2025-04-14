@@ -1,11 +1,17 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@heroui/button";
-import { Input } from "@heroui/input";
 
-const LocalGameSearch = () => {
+interface Props {
+  numberOfRounds: string;
+}
+
+const LocalGameSearch: React.FC<Props> = ({ numberOfRounds }: Props) => {
+  // converto il prop numberOfRounds in un numero
+  const numberOfRoundsInt = parseInt(numberOfRounds, 10);
+
   // volendo si potrebbe spostare la logica all'interno di un hook
   // LOGICA API CALL
-  const [apiResponse, setApiResponse] = useState<string>("");
+  const [apiResponse, setApiResponse] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // prendo l'api tramite vite
@@ -14,30 +20,48 @@ const LocalGameSearch = () => {
   const handleSearch = async () => {
     // operazioni preliminari
     setIsLoading(true);
-    setApiResponse("");
+    setApiResponse([]);
 
-    const queryUrl = `https://api.clip.cafe/?api_key=${clipcafeKey}&size=100&views=1000000-10000000`;
+    // TODO: regolare likes / views a seconda dell'effetto desiderato
+    const queryUrl = `https://api.clip.cafe/?api_key=${clipcafeKey}&size=1000&views=10000-10000000`;
     try {
       const response = await fetch(queryUrl);
       const result = await response.json();
 
-      // prendo soltanto le clipID della risposta (se esistono)
-      //   if (result.hits?.hits) {
-      //     const totalClipIDs = result.hits.hits.map(
-      //       (hit: any) => hit._source.clipID
-      //     );
-      //   }
+      // prendo soltanto le clipID della risposta (se esistono) e da film diversi
+      if (result.hits?.hits) {
+        const seenMovies = new Set();
 
-      setApiResponse(result); // Update state with the response
+        const uniqueClipIDs = result.hits.hits
+          // anzitutto filtro usando un insieme per evitare clipID relative allo stesso film
+          .filter((hit: any) => {
+            const movieTitle = hit._source.movie_title;
+            if (seenMovies.has(movieTitle)) return false;
+            seenMovies.add(movieTitle);
+            return true;
+          })
+          // poi estraggo i clip ids
+          .map((hit: any) => hit._source.clipID)
+          // randomizzo l'array
+          .sort(() => 0.5 - Math.random())
+          // e ne prendo soltanto numberofrounds
+          .slice(0, numberOfRoundsInt);
+
+        setApiResponse(uniqueClipIDs);
+      }
     } catch (err) {
+      // todo: gestire errori
       console.error("Error fetching data:", err);
     } finally {
-      setIsLoading(false);
+      // resetto lo stato di caricamento dopo un breve timeout
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
     }
   };
 
   return (
-    <div>
+    <>
       <Button
         onPress={handleSearch}
         size={"lg"}
@@ -46,8 +70,12 @@ const LocalGameSearch = () => {
       >
         Search
       </Button>
-      <p>API Response: {apiResponse}</p>
-    </div>
+      <ul>
+        {apiResponse.map((clipID, index) => (
+          <li key={index}>{clipID}</li>
+        ))}
+      </ul>
+    </>
   );
 };
 
