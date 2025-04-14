@@ -51,16 +51,10 @@ const LocalGameSearch: React.FC<Props> = ({ numberOfRounds }: Props) => {
         setApiResponse(uniqueIDs);
 
         if (uniqueIDs.length > 0) {
-          const firstHit = result.hits.hits[0]._source;
-          const slug = firstHit.slug;
-          const key = firstHit.key; // If the key is available in the `_source` object
+          const firstMovie = uniqueIDs[0];
+          console.log("Downloading first movie:", firstMovie);
 
-          const encodedSlug = encodeURIComponent(slug);
-          const encodedKey = encodeURIComponent(key);
-          const encodedUrl = `https://api.clip.cafe/?api_key=${clipcafeKey}&slug=${encodedSlug}&key=${encodedKey}`;
-          console.log("Encoded URL:", encodedUrl);
-
-          const downloadResponse = await fetch(encodedUrl);
+          const downloadResponse = await fetch(firstMovie);
 
           //   const blob = await downloadResponse.blob();
           //   const videoUrl = URL.createObjectURL(blob);
