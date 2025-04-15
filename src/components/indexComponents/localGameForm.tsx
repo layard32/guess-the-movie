@@ -5,12 +5,18 @@ import { GiTabletopPlayers } from "react-icons/gi";
 import { IoIosPhonePortrait } from "react-icons/io";
 import { MdGroups3 } from "react-icons/md";
 import { PiListNumbers } from "react-icons/pi";
-import LocalGameSearch from "./localGameSearch";
-import { useState } from "react";
+import LocalGameSearch from "./localGameButtonAPI";
+import React, { useState } from "react";
 
-const localGameForm = () => {
-  const [numberOfRounds, setNumberOfRounds] = useState("3");
+interface Props {
+  numberOfRounds: string;
+  setNumberOfRounds: React.Dispatch<React.SetStateAction<string>>;
+}
 
+const localGameForm: React.FC<Props> = ({
+  numberOfRounds,
+  setNumberOfRounds,
+}: Props) => {
   return (
     <>
       <Form className="flex flex-col gap-4 justify-center items-center py-2.5">
@@ -108,9 +114,6 @@ const localGameForm = () => {
           </SelectItem>
         </Select>
       </Form>
-
-      {/* componente col pulsante e la logica per gestire la chiamata APi */}
-      <LocalGameSearch numberOfRounds={numberOfRounds} />
     </>
   );
 };

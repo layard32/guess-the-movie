@@ -1,7 +1,8 @@
 import DefaultLayout from "@/layouts/default";
 import { Tabs, Tab } from "@heroui/tabs";
-import LocalGameForm from "@/components/indexComponents/localGameForm";
+import LocalGame from "@/components/indexComponents/localGame";
 import { Card, CardBody } from "@heroui/card";
+import { useState } from "react";
 
 export default function IndexPage() {
   return (
@@ -11,7 +12,7 @@ export default function IndexPage() {
           <Tab key="Local" title="Local">
             <Card className="w-[min(500px,80vw)]">
               <CardBody>
-                <LocalGameForm />
+                <LocalGame />
               </CardBody>
             </Card>{" "}
           </Tab>
