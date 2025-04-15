@@ -1,27 +1,46 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useState } from "react";
+import { Button } from "@heroui/button";
 
-const localGameSingleplayer = () => {
-  // const [videoPlayer, setVideoPlayer] = useState<string | null>(null);
+interface Props {
+  apiResponse: string[];
+}
 
-  // if (uniqueIDs.length > 0) {
-  //   const firstMovie = uniqueIDs[0];
-  //   console.log("Downloading first movie:", firstMovie);
+const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
+  // creiamo il video player
+  const [videoPlayer, setVideoPlayer] = useState<string | null>(null);
+  // per tenere traccia dell'index del filmato a cui siamo arrivati
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
 
-  //   const downloadResponse = await fetch(firstMovie);
+  // TODO: quando la pagina viene caricata, mandiamo in play in automatico solo il PRIMO filmato
 
-  //   const blob = await downloadResponse.blob();
-  //   const videoUrl = URL.createObjectURL(blob);
-  //   setVideoPlayer(videoUrl); // Set the video URL to state
-  // }
+  // per scaricare il prossimo filmato
+  const downloadNextMovie = async () => {
+    console.log(apiResponse);
+    // se siamo già a fine lista, non facciamo niente
+    if (currentIndex >= apiResponse.length) return;
+    const nextMovie = apiResponse[currentIndex];
+    setCurrentIndex(currentIndex + 1);
+    try {
+      const downloadResponse = await fetch(nextMovie);
+      const blob = await downloadResponse.blob();
+      const videoUrl = URL.createObjectURL(blob);
+      setVideoPlayer(videoUrl);
+    } catch (err) {
+      console.error("Error downloading video:", err);
+    }
+  };
 
   return (
     <>
-      {/* {videoPlayer && (
-        <video controls width="600">
+      {videoPlayer && (
+        <video autoPlay width="600">
           <source src={videoPlayer} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
-      )} */}
+      )}
+
+      <Button onPress={downloadNextMovie}> Next movie </Button>
     </>
   );
 };

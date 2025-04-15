@@ -64,7 +64,7 @@ const LocalGameSearch: React.FC<Props> = ({
       setTimeout(() => {
         setIsLoading(false);
         setIsPlaying(true);
-      }, 5000);
+      }, 3000);
     }
   };
 
