@@ -1,6 +1,6 @@
-import { menu } from "@heroui/theme";
 import AsyncSelect from "react-select/async";
 
+// definiamo lo stile personalizzato tramite props, come da documentazione di react-select
 const customStyles = {
   control: (provided: any, state: any) => ({
     ...provided,
@@ -27,6 +27,9 @@ const customStyles = {
   singleValue: (provided: any) => ({
     ...provided,
     color: "hsl(var(--heroui-default-foreground))",
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
   }),
   menu: (provided: any) => ({
     ...provided,
@@ -34,6 +37,9 @@ const customStyles = {
   }),
   option: (provided: any, state: any) => ({
     ...provided,
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
     backgroundColor: state.isSelected
       ? "hsl(var(--heroui-primary))"
       : state.isFocused
@@ -53,7 +59,7 @@ const customStyles = {
   }),
 };
 
-// carico i titoli da api TMDB
+// carichiamo i dati da tmdb per il select
 const loadMovies = async (inputMovieTitle: string) => {
   try {
     const TMDB_token = import.meta.env.VITE_TMDB_TOKEN;
@@ -74,17 +80,40 @@ const loadMovies = async (inputMovieTitle: string) => {
 
     const data = await response.json();
 
-    console.log(data);
-
-    // mappiamo i risultati per darli a react-select
+    // mappiamo i dati per darli in pasto a react-select
     return data.results.map((movie: any) => ({
       value: movie.title,
       label: movie.title,
+      poster: `https://image.tmdb.org/t/p/w92${movie.poster_path}`,
     }));
   } catch (error) {
     console.error("Failed to load movies:", error);
     return [];
   }
+};
+
+// componenti customs per mostrare il poster
+const CustomOption = (props: any) => {
+  const { data, innerRef, innerProps } = props;
+  return (
+    <div
+      ref={innerRef}
+      {...innerProps}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+        padding: "8px",
+      }}
+    >
+      <img
+        src={data.poster}
+        alt={data.label}
+        style={{ width: "40px", height: "60px", borderRadius: "4px" }}
+      />
+      <span>{data.label}</span>
+    </div>
+  );
 };
 
 export default function SelectMovie() {
@@ -94,8 +123,12 @@ export default function SelectMovie() {
       styles={customStyles}
       isClearable={true}
       isSearchable={true}
-      // caricamento asincrono
+      // caricamento asincrono dei dati da tmdb
       loadOptions={loadMovies}
+      // componenti personalizzate per mostrare il poster
+      components={{
+        Option: CustomOption,
+      }}
     />
   );
 }
