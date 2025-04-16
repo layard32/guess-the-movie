@@ -1,18 +1,23 @@
 import React, { useEffect, useRef } from "react";
 import { useState } from "react";
-import { Button } from "@heroui/button";
 import { addToast } from "@heroui/toast";
 import { FaHeart } from "react-icons/fa";
 import { FaAward } from "react-icons/fa";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { movieModel } from "@/state/movieModel";
 import SelectMovie from "@/components/selectMovie";
+import { useReward } from "react-rewards";
 
 interface Props {
   apiResponse: movieModel[];
 }
 
 const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
+  // gestione animazione di reward
+  const { reward, isAnimating } = useReward("rewardId", "confetti", {
+    angle: 90,
+  });
+
   // creiamo il video player
   const [videoPlayer, setVideoPlayer] = useState<string | null>(null);
   // per tenere traccia dell'index del filmato a cui siamo arrivati
@@ -48,7 +53,7 @@ const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
       setAreGuessesOver(true);
       return;
     }
-    // TODO: toast o qualcosa, anche per movie wrong
+    reward();
     downloadNextMovie();
   };
 
@@ -115,14 +120,28 @@ const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
         </div>
         {/* valutare posizione themeswitch */}
       </div>
-      {videoPlayer && (
-        <video className="mx-auto rounded-xl" autoPlay width="60%" height="60%">
+      {videoPlayer ? (
+        <video
+          className="mx-auto rounded-xl shadow-lg bg-black object-cover"
+          autoPlay
+          style={{ width: "800px", height: "450px" }}
+        >
           <source src={videoPlayer} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
+      ) : (
+        // TODO: aggiungere spinner
+        <div
+          className="mx-auto rounded-xl shadow-lg bg-black"
+          style={{ width: "800px", height: "450px" }}
+        />
       )}
 
       <SelectMovie handleMovieSelection={handleMovieSelection} />
+      <span
+        id="rewardId"
+        className="w-0 h-0 fixed bottom-1/4 left-1/2 -translate-x-1/2"
+      />
     </>
   );
 };
