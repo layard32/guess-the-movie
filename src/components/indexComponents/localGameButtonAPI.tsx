@@ -25,7 +25,7 @@ const LocalGameSearch: React.FC<Props> = ({
     setApiResponse([]);
 
     // TODO: regolare likes / views / duration / movie year a seconda dell'effetto desiderato
-    const queryUrl = `https://api.clip.cafe/?api_key=${clipcafeKey}&size=1000&views=10000-10000000`;
+    const queryUrl = `https://api.clip.cafe/?api_key=${clipcafeKey}&size=20&views=10000-10000000`;
     try {
       const response = await fetch(queryUrl);
       const result = await response.json();
@@ -54,7 +54,8 @@ const LocalGameSearch: React.FC<Props> = ({
     } catch (err) {
       addToast({
         title: "Error when processing the movies",
-        description: err as string,
+        description:
+          err instanceof Error ? err.message : "An unknown error occurred",
         color: "danger",
         timeout: 3500,
         shouldShowTimeoutProgress: true,

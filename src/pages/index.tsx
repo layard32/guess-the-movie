@@ -1,4 +1,5 @@
 import DefaultLayout from "@/layouts/default";
+import GameLayout from "@/layouts/game";
 import { Tabs, Tab } from "@heroui/tabs";
 import LocalGame from "@/components/indexComponents/localGame";
 import { Card, CardBody } from "@heroui/card";
@@ -12,7 +13,9 @@ export default function IndexPage() {
   const [apiResponse, setApiResponse] = useState<string[]>([]);
 
   return isPlayingLocal ? (
-    <LocalGameSingleplayer apiResponse={apiResponse} />
+    <GameLayout>
+      <LocalGameSingleplayer apiResponse={apiResponse} />
+    </GameLayout>
   ) : (
     <DefaultLayout>
       <div className="flex w-full flex-col justify-center items-center">

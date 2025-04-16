@@ -1,6 +1,10 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { Button } from "@heroui/button";
+import { addToast } from "@heroui/toast";
+import { FaHeart } from "react-icons/fa";
+import { FaAward } from "react-icons/fa";
+import { ThemeSwitch } from "@/components/theme-switch";
 
 interface Props {
   apiResponse: string[];
@@ -14,33 +18,95 @@ const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
 
   // TODO: quando la pagina viene caricata, mandiamo in play in automatico solo il PRIMO filmato
 
+  // gestione logica
+  const [guesses, setGuesses] = useState<number>(3); // guesses disponibili ad ogni clip
+  const [areGuessesOver, setAreGuessesOver] = useState<boolean>(false); // se sono finiti i tentativi
+  const [correctMovies, setCorrectMovies] = useState<number>(0); // film corretti
+
+  const handleMovieRight = () => {
+    setCorrectMovies(correctMovies + 1);
+    if (guesses === 0) {
+      setAreGuessesOver(true);
+      return;
+    }
+    // TODO: toast o qualcosa, anche per movie wrong
+    downloadNextMovie();
+  };
+
+  const handleMovieWrong = () => {
+    setGuesses(guesses - 1);
+    if (guesses === 1) setAreGuessesOver(true);
+    if (guesses === 0) downloadNextMovie();
+  };
+
   // per scaricare il prossimo filmato
   const downloadNextMovie = async () => {
-    console.log(apiResponse);
     // se siamo già a fine lista, non facciamo niente
     if (currentIndex >= apiResponse.length) return;
+    // resettiamo il video player ed il numero di guesses
+    setGuesses(3);
+    setAreGuessesOver(false);
+    setVideoPlayer(null);
     const nextMovie = apiResponse[currentIndex];
     setCurrentIndex(currentIndex + 1);
     try {
       const downloadResponse = await fetch(nextMovie);
+      // gestione errori HTTP
+      if (!downloadResponse.ok)
+        throw new Error(`Status: ${downloadResponse.status}`);
       const blob = await downloadResponse.blob();
       const videoUrl = URL.createObjectURL(blob);
       setVideoPlayer(videoUrl);
     } catch (err) {
-      console.error("Error downloading video:", err);
+      addToast({
+        title: "Error when downloading the movies",
+        description:
+          err instanceof Error ? err.message : "An unknown error occurred",
+        color: "danger",
+        timeout: 2900,
+        shouldShowTimeoutProgress: true,
+      });
+      // reindirizzo all'home page dopo il toast
+      // soluzione temporanea! TODO: MANDARE IL TOAST DOPO REINDIRIZZAMENTO COME FATTO PER OAUTH
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 3000);
     }
   };
 
   return (
     <>
+      {/* la barra superiore al gioco contenente a sinistra il numero di tentativi rimasti e 
+      a destra il numero di film azzeccati  */}
+      <div className="flex pb-20 justify-between">
+        <div className="flex gap-2">
+          {Array(guesses)
+            .fill(null)
+            .map((_, index) => (
+              <FaHeart key={index} size={30} className="text-primary" />
+            ))}
+        </div>
+        <div className="flex gap-2">
+          {Array(correctMovies)
+            .fill(null)
+            .map((_, index) => (
+              <FaAward key={index} size={30} className="text-primary" />
+            ))}
+          <ThemeSwitch className="ml-5" />
+        </div>
+        {/* valutare posizione themeswitch */}
+      </div>
       {videoPlayer && (
-        <video autoPlay width="600">
+        <video className="mx-auto rounded-xl" autoPlay width="60%" height="60%">
           <source src={videoPlayer} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
       )}
 
-      <Button onPress={downloadNextMovie}> Next movie </Button>
+      <Button onPress={handleMovieRight} isDisabled={areGuessesOver}>
+        Movie right
+      </Button>
+      <Button onPress={handleMovieWrong}>Movie wrong</Button>
     </>
   );
 };
