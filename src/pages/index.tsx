@@ -6,7 +6,6 @@ import { Card, CardBody } from "@heroui/card";
 import { useState } from "react";
 import LocalGameSingleplayer from "./../components/indexComponents/localGameSingleplayer";
 import { movieModel } from "@/state/movieModel";
-import SelectMovie from "@/components/selectMovie";
 
 export default function IndexPage() {
   // per tenere traccia se il gioco locale è partito o meno
@@ -37,7 +36,6 @@ export default function IndexPage() {
           </Tab>
         </Tabs>
       </div>
-      <SelectMovie />
     </DefaultLayout>
   );
 }

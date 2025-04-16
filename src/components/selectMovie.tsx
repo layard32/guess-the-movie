@@ -1,3 +1,4 @@
+import React from "react";
 import AsyncSelect from "react-select/async";
 
 // definiamo lo stile personalizzato tramite props, come da documentazione di react-select
@@ -15,6 +16,7 @@ const customStyles = {
       borderColor: "hsl(var(--heroui-primary))",
     },
     borderRadius: "8px",
+    height: "3.5rem",
   }),
   input: (provided: any) => ({
     ...provided,
@@ -59,39 +61,6 @@ const customStyles = {
   }),
 };
 
-// carichiamo i dati da tmdb per il select
-const loadMovies = async (inputMovieTitle: string) => {
-  try {
-    const TMDB_token = import.meta.env.VITE_TMDB_TOKEN;
-    const url = `https://api.themoviedb.org/3/search/movie?include_adult=false&language=en-US&page=1&query=${inputMovieTitle}`;
-    const options = {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${TMDB_token}`,
-      },
-    };
-
-    const response = await fetch(url, options);
-
-    if (!response.ok) {
-      throw new Error(`Error fetching movies: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-
-    // mappiamo i dati per darli in pasto a react-select
-    return data.results.map((movie: any) => ({
-      value: movie.title,
-      label: movie.title,
-      poster: `https://image.tmdb.org/t/p/w92${movie.poster_path}`,
-    }));
-  } catch (error) {
-    console.error("Failed to load movies:", error);
-    return [];
-  }
-};
-
 // componenti customs per mostrare il poster
 const CustomOption = (props: any) => {
   const { data, innerRef, innerProps } = props;
@@ -116,10 +85,48 @@ const CustomOption = (props: any) => {
   );
 };
 
-export default function SelectMovie() {
+interface Props {
+  handleMovieSelection: (movieTitle: string) => void;
+}
+
+const SelectMovie: React.FC<Props> = ({ handleMovieSelection }: Props) => {
+  // carichiamo i dati da tmdb per il select
+  const loadMovies = async (inputMovieTitle: string) => {
+    try {
+      const TMDB_token = import.meta.env.VITE_TMDB_TOKEN;
+      const url = `https://api.themoviedb.org/3/search/movie?include_adult=false&language=en-US&page=1&query=${inputMovieTitle}`;
+      const options = {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${TMDB_token}`,
+        },
+      };
+
+      const response = await fetch(url, options);
+
+      if (!response.ok) {
+        throw new Error(`Error fetching movies: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      // mappiamo i dati per darli in pasto a react-select
+      return data.results.map((movie: any) => ({
+        value: movie.title,
+        label: movie.title,
+        poster: `https://image.tmdb.org/t/p/w92${movie.poster_path}`,
+      }));
+    } catch (error) {
+      console.error("Failed to load movies:", error);
+      return [];
+    }
+  };
+
   return (
     <AsyncSelect
-      placeholder="Search for a movie..."
+      className="w-[min(500px,80vw)] mx-auto mt-12"
+      placeholder="Guess the movie"
       styles={customStyles}
       isClearable={true}
       isSearchable={true}
@@ -129,6 +136,11 @@ export default function SelectMovie() {
       components={{
         Option: CustomOption,
       }}
+      onChange={(selectedMovie: any) => {
+        handleMovieSelection(selectedMovie.value);
+      }}
     />
   );
-}
+};
+
+export default SelectMovie;

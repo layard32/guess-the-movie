@@ -6,7 +6,7 @@ import { FaHeart } from "react-icons/fa";
 import { FaAward } from "react-icons/fa";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { movieModel } from "@/state/movieModel";
-import { Input } from "@heroui/input";
+import SelectMovie from "@/components/selectMovie";
 
 interface Props {
   apiResponse: movieModel[];
@@ -31,6 +31,16 @@ const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
   const [guesses, setGuesses] = useState<number>(3); // guesses disponibili ad ogni clip
   const [areGuessesOver, setAreGuessesOver] = useState<boolean>(false); // se sono finiti i tentativi
   const [correctMovies, setCorrectMovies] = useState<number>(0); // film corretti
+
+  const handleMovieSelection = (movieTitle: string) => {
+    console.log("film selezionat", movieTitle);
+    console.log(
+      "film attuale da clip cafe",
+      apiResponse[currentIndex - 1].title
+    );
+    if (movieTitle === apiResponse[currentIndex - 1].title) handleMovieRight();
+    else handleMovieWrong();
+  };
 
   const handleMovieRight = () => {
     setCorrectMovies(correctMovies + 1);
@@ -112,10 +122,7 @@ const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
         </video>
       )}
 
-      <Button onPress={handleMovieRight} isDisabled={areGuessesOver}>
-        Movie right
-      </Button>
-      <Button onPress={handleMovieWrong}>Movie wrong</Button>
+      <SelectMovie handleMovieSelection={handleMovieSelection} />
     </>
   );
 };
