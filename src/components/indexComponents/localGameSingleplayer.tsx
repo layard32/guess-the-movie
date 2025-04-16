@@ -7,6 +7,7 @@ import { ThemeSwitch } from "@/components/theme-switch";
 import { movieModel } from "@/state/movieModel";
 import SelectMovie from "@/components/selectMovie";
 import { useReward } from "react-rewards";
+import { Button } from "@heroui/button";
 
 interface Props {
   apiResponse: movieModel[];
@@ -18,10 +19,9 @@ const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
     angle: 90,
   });
 
-  // creiamo il video player
+  // gestione video player
   const [videoPlayer, setVideoPlayer] = useState<string | null>(null);
-  // per tenere traccia dell'index del filmato a cui siamo arrivati
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   // quando la pagina viene caricata, mandiamo in play in automatico solo il PRIMO filmato
   const hasRun = useRef(false); // utilizzo useRef per farlo eseguire solo al montaggio iniziale
@@ -33,16 +33,18 @@ const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
   }, []);
 
   // gestione logica
+  const [currentIndex, setCurrentIndex] = useState<number>(0); // per tenere traccia dell'index del filmato a cui siamo arrivati
   const [guesses, setGuesses] = useState<number>(3); // guesses disponibili ad ogni clip
   const [areGuessesOver, setAreGuessesOver] = useState<boolean>(false); // se sono finiti i tentativi
   const [correctMovies, setCorrectMovies] = useState<number>(0); // film corretti
+  const [isChoosing, setIsChoosing] = useState<boolean>(false); // se si sta scegliendo un film
+
+  const handleChoosing = () => {
+    setIsChoosing(true);
+  };
 
   const handleMovieSelection = (movieTitle: string) => {
-    console.log("film selezionat", movieTitle);
-    console.log(
-      "film attuale da clip cafe",
-      apiResponse[currentIndex - 1].title
-    );
+    setIsChoosing(false);
     if (movieTitle === apiResponse[currentIndex - 1].title) handleMovieRight();
     else handleMovieWrong();
   };
@@ -63,7 +65,7 @@ const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
     if (guesses === 0) downloadNextMovie();
   };
 
-  // per scaricare il prossimo filmato
+  // gestione chiamata api
   const downloadNextMovie = async () => {
     // se siamo già a fine lista, non facciamo niente
     if (currentIndex >= apiResponse.length) return;
@@ -120,8 +122,10 @@ const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
         </div>
         {/* valutare posizione themeswitch */}
       </div>
+
       {videoPlayer ? (
         <video
+          ref={videoRef}
           className="mx-auto rounded-xl shadow-lg bg-black object-cover"
           autoPlay
           style={{ width: "800px", height: "450px" }}
@@ -130,18 +134,36 @@ const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
           Your browser does not support the video tag.
         </video>
       ) : (
-        // TODO: aggiungere spinner
+        // TODO: aggiungere spinner e delay di caricamento
         <div
           className="mx-auto rounded-xl shadow-lg bg-black"
           style={{ width: "800px", height: "450px" }}
         />
       )}
 
-      <SelectMovie handleMovieSelection={handleMovieSelection} />
+      {isChoosing ? (
+        <SelectMovie handleMovieSelection={handleMovieSelection} />
+      ) : (
+        <div className="flex flex-col items-center justify-center">
+          <p className="text-center mt-12 w-1/2">
+            If you click guess, you have 5 seconds to type a movie. Even if you
+            don't select anything, when the timer ends you lose a guess!
+          </p>
+          <Button
+            className="mt-3 w-1/12"
+            variant="shadow"
+            color="primary"
+            onPress={handleChoosing}
+          >
+            Guess
+          </Button>
+        </div>
+      )}
+
       <span
         id="rewardId"
         className="w-0 h-0 fixed bottom-1/4 left-1/2 -translate-x-1/2"
-      />
+      ></span>
     </>
   );
 };
