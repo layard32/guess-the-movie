@@ -5,6 +5,8 @@ const countdownRenderer = ({ seconds }: { seconds: number }) => (
 );
 
 const CountdownComponent: React.FC = () => {
+  // todo: definire stile, aggiungere suono e aggiungere fuznione callback quando finisce
+
   return (
     <div>
       <Countdown date={Date.now() + 5000} renderer={countdownRenderer} />

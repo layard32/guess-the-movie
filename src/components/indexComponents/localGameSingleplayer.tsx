@@ -8,6 +8,7 @@ import { movieModel } from "@/state/movieModel";
 import SelectMovie from "@/components/selectMovie";
 import { useReward } from "react-rewards";
 import { Button } from "@heroui/button";
+import CountdownComponent from "../countdown";
 
 interface Props {
   apiResponse: movieModel[];
@@ -112,6 +113,7 @@ const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
               <FaHeart key={index} size={30} className="text-primary" />
             ))}
         </div>
+        <CountdownComponent />
         <div className="flex gap-2">
           {Array(correctMovies)
             .fill(null)
