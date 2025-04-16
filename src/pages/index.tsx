@@ -5,12 +5,14 @@ import LocalGame from "@/components/indexComponents/localGame";
 import { Card, CardBody } from "@heroui/card";
 import { useState } from "react";
 import LocalGameSingleplayer from "./../components/indexComponents/localGameSingleplayer";
+import { movieModel } from "@/state/movieModel";
+import { Input } from "@heroui/input";
 
 export default function IndexPage() {
   // per tenere traccia se il gioco locale è partito o meno
   const [isPlayingLocal, setIsPlayingLocal] = useState<boolean>(false);
   // per tenere traccia dell'api response (ottenuta da localGameButtonAPI)
-  const [apiResponse, setApiResponse] = useState<string[]>([]);
+  const [apiResponse, setApiResponse] = useState<movieModel[]>([]);
 
   return isPlayingLocal ? (
     <GameLayout>
@@ -35,6 +37,7 @@ export default function IndexPage() {
           </Tab>
         </Tabs>
       </div>
+      <Input> </Input>
     </DefaultLayout>
   );
 }

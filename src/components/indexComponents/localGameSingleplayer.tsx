@@ -1,13 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import { Button } from "@heroui/button";
 import { addToast } from "@heroui/toast";
 import { FaHeart } from "react-icons/fa";
 import { FaAward } from "react-icons/fa";
 import { ThemeSwitch } from "@/components/theme-switch";
+import { movieModel } from "@/state/movieModel";
+import { Input } from "@heroui/input";
 
 interface Props {
-  apiResponse: string[];
+  apiResponse: movieModel[];
 }
 
 const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
@@ -16,7 +18,14 @@ const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
   // per tenere traccia dell'index del filmato a cui siamo arrivati
   const [currentIndex, setCurrentIndex] = useState<number>(0);
 
-  // TODO: quando la pagina viene caricata, mandiamo in play in automatico solo il PRIMO filmato
+  // quando la pagina viene caricata, mandiamo in play in automatico solo il PRIMO filmato
+  const hasRun = useRef(false); // utilizzo useRef per farlo eseguire solo al montaggio iniziale
+  useEffect(() => {
+    if (!hasRun.current) {
+      downloadNextMovie();
+      hasRun.current = true;
+    }
+  }, []);
 
   // gestione logica
   const [guesses, setGuesses] = useState<number>(3); // guesses disponibili ad ogni clip
@@ -47,10 +56,10 @@ const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
     setGuesses(3);
     setAreGuessesOver(false);
     setVideoPlayer(null);
-    const nextMovie = apiResponse[currentIndex];
+    const nextMovie: movieModel = apiResponse[currentIndex];
     setCurrentIndex(currentIndex + 1);
     try {
-      const downloadResponse = await fetch(nextMovie);
+      const downloadResponse = await fetch(nextMovie.download);
       // gestione errori HTTP
       if (!downloadResponse.ok)
         throw new Error(`Status: ${downloadResponse.status}`);

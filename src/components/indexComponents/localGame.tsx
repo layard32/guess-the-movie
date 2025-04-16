@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import LocalGameForm from "./localGameForm";
 import LocalGameButtonAPI from "./localGameButtonAPI";
+import { movieModel } from "@/state/movieModel";
 
 interface Props {
   setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>;
-  setApiResponse: React.Dispatch<React.SetStateAction<string[]>>;
+  setApiResponse: React.Dispatch<React.SetStateAction<movieModel[]>>;
 }
 
 const localGame: React.FC<Props> = ({

@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { Button } from "@heroui/button";
 import { addToast } from "@heroui/toast";
+import { movieModel } from "@/state/movieModel";
 
 interface Props {
   numberOfRounds: string;
   setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>;
-  setApiResponse: React.Dispatch<React.SetStateAction<string[]>>;
+  setApiResponse: React.Dispatch<React.SetStateAction<movieModel[]>>;
 }
 
 const LocalGameSearch: React.FC<Props> = ({
@@ -34,7 +35,7 @@ const LocalGameSearch: React.FC<Props> = ({
       if (result.hits?.hits) {
         const seenMovies = new Set();
 
-        const uniqueIDs = result.hits.hits
+        const uniqueClips = result.hits.hits
           // anzitutto filtro usando un insieme per evitare elementi relativi allo stesso film
           .filter((hit: any) => {
             const movieTitle = hit._source.movie_title;
@@ -43,13 +44,17 @@ const LocalGameSearch: React.FC<Props> = ({
             return true;
           })
           // poi estraggo donwload
-          .map((hit: any) => hit._source.download)
+          .map((hit: any) => ({
+            download: hit._source.download,
+            title: hit._source.movie_title,
+            poster: hit._source.movie_poster,
+          }))
           // randomizzo l'array
           .sort(() => 0.5 - Math.random())
           // e ne prendo soltanto numberofrounds
           .slice(0, numberOfRoundsInt);
 
-        setApiResponse(uniqueIDs);
+        setApiResponse(uniqueClips);
       }
     } catch (err) {
       addToast({
