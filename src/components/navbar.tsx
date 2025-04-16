@@ -72,7 +72,9 @@ export const Navbar = () => {
           >
             {/* TODO: cambiare logo */}
             <Logo className="sm:mt-1" />
-            <p className="font-bold text-inherit sm:text-2xl">Movie Guesser</p>
+            <p className="font-bold text-inherit sm:text-2xl text-danger">
+              Movie Guesser
+            </p>
           </Link>
         </NavbarBrand>
       </NavbarContent>

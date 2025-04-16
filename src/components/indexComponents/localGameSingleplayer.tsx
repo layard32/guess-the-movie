@@ -36,15 +36,19 @@ const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
   // gestione logica
   const [currentIndex, setCurrentIndex] = useState<number>(0); // per tenere traccia dell'index del filmato a cui siamo arrivati
   const [guesses, setGuesses] = useState<number>(3); // guesses disponibili ad ogni clip
-  const [areGuessesOver, setAreGuessesOver] = useState<boolean>(false); // se sono finiti i tentativi
   const [correctMovies, setCorrectMovies] = useState<number>(0); // film corretti
   const [isChoosing, setIsChoosing] = useState<boolean>(false); // se si sta scegliendo un film
 
-  const handleChoosing = () => {
+  const handleStartChoosing = () => {
     setIsChoosing(true);
+    if (videoRef.current) {
+      videoRef.current.pause();
+    }
   };
 
   const handleMovieSelection = (movieTitle: string) => {
+    // rifacciamo partire il video
+    if (videoRef.current) videoRef.current.play();
     setIsChoosing(false);
     if (movieTitle === apiResponse[currentIndex - 1].title) handleMovieRight();
     else handleMovieWrong();
@@ -52,18 +56,19 @@ const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
 
   const handleMovieRight = () => {
     setCorrectMovies(correctMovies + 1);
+
     if (guesses === 0) {
-      setAreGuessesOver(true);
       return;
     }
+
     reward();
     downloadNextMovie();
   };
 
   const handleMovieWrong = () => {
     setGuesses(guesses - 1);
-    if (guesses === 1) setAreGuessesOver(true);
-    if (guesses === 0) downloadNextMovie();
+
+    if (guesses === 1) downloadNextMovie();
   };
 
   // gestione chiamata api
@@ -72,7 +77,6 @@ const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
     if (currentIndex >= apiResponse.length) return;
     // resettiamo il video player ed il numero di guesses
     setGuesses(3);
-    setAreGuessesOver(false);
     setVideoPlayer(null);
     const nextMovie: movieModel = apiResponse[currentIndex];
     setCurrentIndex(currentIndex + 1);
@@ -113,7 +117,10 @@ const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
               <FaHeart key={index} size={30} className="text-primary" />
             ))}
         </div>
-        <CountdownComponent />
+        <CountdownComponent
+          startCountdown={isChoosing}
+          handleCountdownEnd={handleMovieSelection}
+        />
         <div className="flex gap-2">
           {Array(correctMovies)
             .fill(null)
@@ -131,6 +138,7 @@ const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
           className="mx-auto rounded-xl shadow-lg bg-black object-cover"
           autoPlay
           style={{ width: "800px", height: "450px" }}
+          onEnded={downloadNextMovie}
         >
           <source src={videoPlayer} type="video/mp4" />
           Your browser does not support the video tag.
@@ -155,7 +163,7 @@ const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
             className="mt-3 w-1/12"
             variant="shadow"
             color="primary"
-            onPress={handleChoosing}
+            onPress={handleStartChoosing}
           >
             Guess
           </Button>

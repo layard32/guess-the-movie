@@ -1,16 +1,44 @@
 import Countdown from "react-countdown";
+import tickingSoundSource from "../sound/clock-ticking.mp3";
+import React, { useRef } from "react";
 
 const countdownRenderer = ({ seconds }: { seconds: number }) => (
-  <span>{seconds}</span>
+  // definiamo stile personalizzato
+  <span className="text-danger font-bold text-3xl -mt-1">{seconds}</span>
 );
 
-const CountdownComponent: React.FC = () => {
-  // todo: definire stile, aggiungere suono e aggiungere fuznione callback quando finisce
+interface Props {
+  startCountdown: boolean;
+  handleCountdownEnd: (placeholder: string) => void;
+}
+
+const CountdownComponent: React.FC<Props> = ({
+  startCountdown,
+  handleCountdownEnd,
+}: Props) => {
+  // aggiunta suono
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   return (
-    <div>
-      <Countdown date={Date.now() + 5000} renderer={countdownRenderer} />
-    </div>
+    <>
+      {startCountdown && (
+        <>
+          <Countdown
+            autoStart={true}
+            date={Date.now() + 5000}
+            renderer={countdownRenderer}
+            onMount={() => {
+              if (audioRef.current) {
+                audioRef.current.volume = 0.1;
+                audioRef.current.play();
+              }
+            }}
+            onComplete={() => handleCountdownEnd("")}
+          />
+          <audio id="tick_sound" src={tickingSoundSource} ref={audioRef} />
+        </>
+      )}
+    </>
   );
 };
 
