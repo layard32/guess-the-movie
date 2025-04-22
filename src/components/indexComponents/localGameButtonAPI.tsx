@@ -59,14 +59,13 @@ const LocalGameSearch: React.FC<Props> = ({
       // per ogni film controllo se ci sono clip disponibili su clipcafe
       // se ci sono, aggiungo l'oggetto movieModel all'array moviesFound
       movieTitles.forEach(async (movieTitle: string) => {
-        const queryURLCC = `https://api.clip.cafe/?api_key=${clipcafeKey}&movie_title=${movieTitle}&size=3`;
+        const queryURLCC = `https://api.clip.cafe/?api_key=${clipcafeKey}&movie_title=${movieTitle}&size=3&duration=20-60`;
         const responseCC = await fetch(queryURLCC);
         if (!responseCC.ok)
           throw new Error(
             `Error fetching movies from ClipCafe: ${responseCC.statusText}`
           );
         const dataCC = await responseCC.json();
-        console.log(dataCC);
 
         // prendo title, poster e download di una clip randomica relativa al film
         if (dataCC.hits?.hits) {
@@ -96,6 +95,7 @@ const LocalGameSearch: React.FC<Props> = ({
       });
     } finally {
       // setto l'api response con l'array di film trovati
+      console.log("Movies found: ", moviesFound);
       setApiResponse(moviesFound);
 
       // resetto lo stato di caricamento dopo un breve timeout

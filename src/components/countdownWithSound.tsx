@@ -1,6 +1,6 @@
 import Countdown from "react-countdown";
 import tickingSoundSource from "../sound/clock-ticking.mp3";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 const countdownRenderer = ({ seconds }: { seconds: number }) => (
   // definiamo stile personalizzato
