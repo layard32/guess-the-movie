@@ -30,3 +30,6 @@ bun.lockb
 
 # Environment variables
 .env
+
+# TO DO
+todo.md
