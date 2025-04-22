@@ -49,16 +49,16 @@ const LocalGameSearch: React.FC<Props> = ({
         );
       const dataTMDB = await responseTMDB.json();
 
-      // estraggo i titoli dei film, li randomizzo e ne prendo numberOfRounds + 3 (i tre aggiuntivi
+      // estraggo i titoli dei film, li randomizzo e ne prendo numberOfRounds + 4 (gli aggiuntivi
       // servono nel caso in cui non ci siano clip disponibili su clipcafe)
       const movieTitles = dataTMDB.results
         .map((movie: any) => movie.title)
         .sort(() => 0.5 - Math.random())
-        .slice(0, numberOfRoundsInt + 3);
+        .slice(0, numberOfRoundsInt + 4);
 
-      // per ogni film controllo se ci sono clip disponibili su clipcafe
-      // se ci sono, aggiungo l'oggetto movieModel all'array moviesFound
       movieTitles.forEach(async (movieTitle: string) => {
+        // per ogni film controllo se ci sono clip disponibili su clipcafe
+        // se ci sono, aggiungo l'oggetto movieModel all'array moviesFound
         const queryURLCC = `https://api.clip.cafe/?api_key=${clipcafeKey}&movie_title=${movieTitle}&size=3&duration=20-60`;
         const responseCC = await fetch(queryURLCC);
         if (!responseCC.ok)
@@ -68,7 +68,8 @@ const LocalGameSearch: React.FC<Props> = ({
         const dataCC = await responseCC.json();
 
         // prendo title, poster e download di una clip randomica relativa al film
-        if (dataCC.hits?.hits) {
+        // ma soltanto se ci sta almeno una clip disponibile
+        if (dataCC.hits?.hits && dataCC.hits.hits.length > 0) {
           const uniqueClip: movieModel = dataCC.hits.hits
             .map((hit: any) => ({
               download: hit._source.download,
@@ -78,7 +79,7 @@ const LocalGameSearch: React.FC<Props> = ({
             .sort(() => 0.5 - Math.random())[0];
 
           // l'aggiungo all'array, soltanto se moviesFound non è già pieno
-          if (moviesFound.length < numberOfRoundsInt)
+          if (uniqueClip && moviesFound.length < numberOfRoundsInt)
             moviesFound.push(uniqueClip);
         }
       });
