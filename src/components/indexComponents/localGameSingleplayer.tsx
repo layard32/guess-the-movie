@@ -162,7 +162,7 @@ const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
           <Button
             className="mt-3 w-1/12"
             variant="shadow"
-            color="primary"
+            color="danger"
             onPress={handleStartChoosing}
           >
             Guess

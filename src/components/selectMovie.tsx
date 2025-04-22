@@ -92,17 +92,17 @@ interface Props {
 const SelectMovie: React.FC<Props> = ({ handleMovieSelection }: Props) => {
   // carichiamo i dati da tmdb per il select
   const loadMovies = async (inputMovieTitle: string) => {
-    try {
-      const TMDB_token = import.meta.env.VITE_TMDB_TOKEN;
-      const url = `https://api.themoviedb.org/3/search/movie?include_adult=false&language=en-US&page=1&query=${inputMovieTitle}`;
-      const options = {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${TMDB_token}`,
-        },
-      };
+    const TMDB_token = import.meta.env.VITE_TMDB_TOKEN;
+    const url = `https://api.themoviedb.org/3/search/movie?include_adult=false&language=en-US&page=1&query=${inputMovieTitle}`;
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${TMDB_token}`,
+      },
+    };
 
+    try {
       const response = await fetch(url, options);
 
       if (!response.ok) {
