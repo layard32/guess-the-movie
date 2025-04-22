@@ -1,10 +1,10 @@
 import DefaultLayout from "@/layouts/default";
 import GameLayout from "@/layouts/game";
 import { Tabs, Tab } from "@heroui/tabs";
-import LocalGame from "@/components/indexComponents/localGame";
+import LocalGame from "@/components/localGameComponents/localGame";
 import { Card, CardBody } from "@heroui/card";
 import { useState } from "react";
-import LocalGameSingleplayer from "./../components/indexComponents/localGameSingleplayer";
+import LocalGameSingleplayer from "../components/localGameComponents/localGameSingleplayer";
 import { movieModel } from "@/state/movieModel";
 
 export default function IndexPage() {

@@ -10,6 +10,8 @@ import { useReward } from "react-rewards";
 import { Button } from "@heroui/button";
 import CountdownComponent from "../countdownWithSound";
 import { Spinner } from "@heroui/spinner";
+import { motion } from "motion/react";
+import { AnimatePresence } from "motion/react";
 
 interface Props {
   apiResponse: movieModel[];
@@ -42,25 +44,40 @@ const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
   const [correctMovies, setCorrectMovies] = useState<number>(0); // film corretti
   const [isChoosing, setIsChoosing] = useState<boolean>(false); // se si sta scegliendo un film
 
-  const handleStartChoosing = () => {
+  // aspetto che il video sia caricato prima di metterlo in pausa
+  const waitForVideoRef = (): Promise<HTMLVideoElement> => {
+    return new Promise((resolve) => {
+      const checkVideoRef = () => {
+        if (videoRef.current) {
+          resolve(videoRef.current);
+        } else {
+          requestAnimationFrame(checkVideoRef); // utilizzo requestanimationframe per controllare al frame successivo
+        }
+      };
+      checkVideoRef();
+    });
+  };
+
+  const handleStartChoosing = async () => {
     // l'utente sta scegliendo un film
     setIsChoosing(true);
-    if (videoRef.current) {
-      videoRef.current.pause();
-    }
+    // aspetto che il video sia caricato: poi lo metto in pausa
+    const videoElement = await waitForVideoRef();
+    videoElement.pause();
   };
 
   const handleMovieSelection = (movieTitle: string) => {
+    // l'utente non sta più scegliendo un film
+    setIsChoosing(false);
     // rifacciamo partire il video se questo non è finito: altrimenti scarichiamo il prossimo filmato
     if (videoRef.current) {
       if (videoRef.current.ended) {
         downloadNextMovie();
+        return;
       } else {
         videoRef.current.play();
       }
     }
-    // l'utente non sta più scegliendo un film
-    setIsChoosing(false);
     // se le guesses sono finite, non facciamo niente
     if (guesses === 0) return;
     // altrimenti valutiamo se la risposta è corretta o meno
@@ -121,9 +138,9 @@ const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
       });
       // reindirizzo all'home page dopo il toast
       // soluzione temporanea! TODO: MANDARE IL TOAST DOPO REINDIRIZZAMENTO COME FATTO PER OAUTH
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 3000);
+      // setTimeout(() => {
+      //   window.location.href = "/";
+      // }, 3000);
     } finally {
       // aspettiamo un secondo (per fingere un caricamento) prima di mostrare il video
       if (videoUrl !== "") {
@@ -146,22 +163,70 @@ const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
       a destra il numero di film azzeccati  */}
       <div className="flex pb-20 justify-between">
         <div className="flex gap-2">
-          {Array(guesses)
-            .fill(null)
-            .map((_, index) => (
-              <FaHeart key={index} size={30} className="text-primary" />
-            ))}
+          <AnimatePresence>
+            {Array(guesses)
+              .fill(null)
+              .map((_, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ scale: 0 }}
+                  animate={{
+                    scale: 1,
+                    transition: {
+                      type: "spring",
+                      stiffness: 100,
+                      damping: 8,
+                      delay: index * 0.1,
+                      bounce: 1,
+                    },
+                  }}
+                  exit={{
+                    scale: 0,
+                    opacity: 0,
+                    transition: {
+                      duration: 1,
+                    },
+                  }}
+                >
+                  <FaHeart size={30} className="text-primary" />
+                </motion.div>
+              ))}
+          </AnimatePresence>
         </div>
         <CountdownComponent
           startCountdown={isChoosing}
           handleCountdownEnd={handleMovieSelection}
         />
         <div className="flex gap-2">
-          {Array(correctMovies)
-            .fill(null)
-            .map((_, index) => (
-              <FaAward key={index} size={30} className="text-primary" />
-            ))}
+          <AnimatePresence>
+            {Array(correctMovies)
+              .fill(null)
+              .map((_, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ scale: 0 }}
+                  animate={{
+                    scale: 1,
+                    transition: {
+                      type: "spring",
+                      stiffness: 100,
+                      damping: 8,
+                      delay: index * 0.1,
+                      bounce: 1,
+                    },
+                  }}
+                  exit={{
+                    scale: 0,
+                    opacity: 0,
+                    transition: {
+                      duration: 1,
+                    },
+                  }}
+                >
+                  <FaAward size={30} className="text-primary" />
+                </motion.div>
+              ))}
+          </AnimatePresence>
           <ThemeSwitch className="ml-5" />
         </div>
         {/* valutare posizione themeswitch */}
@@ -191,7 +256,7 @@ const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
         <SelectMovie handleMovieSelection={handleMovieSelection} />
       ) : (
         <div className="flex flex-col items-center justify-center">
-          <p className="text-center mt-12 w-1/2">
+          <p className="text-center mt-20 w-1/2">
             If you click guess, you have 5 seconds to type a movie. Even if you
             don't select anything, when the timer ends you lose a guess!
           </p>
@@ -202,7 +267,7 @@ const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
             onPress={handleStartChoosing}
             size="lg"
           >
-            Guess
+            GUESS
           </Button>
         </div>
       )}

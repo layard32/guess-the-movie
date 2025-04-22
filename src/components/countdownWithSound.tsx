@@ -4,7 +4,7 @@ import React, { useEffect, useRef } from "react";
 
 const countdownRenderer = ({ seconds }: { seconds: number }) => (
   // definiamo stile personalizzato
-  <span className="text-danger font-bold text-3xl -mt-1">{seconds}</span>
+  <span className="text-danger font-bold text-3xl -mt-2">{seconds}</span>
 );
 
 interface Props {
@@ -25,7 +25,7 @@ const CountdownComponent: React.FC<Props> = ({
         <>
           <Countdown
             autoStart={true}
-            date={Date.now() + 5000}
+            date={Date.now() + 10000}
             renderer={countdownRenderer}
             onMount={() => {
               if (audioRef.current) {

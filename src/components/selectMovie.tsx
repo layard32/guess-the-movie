@@ -125,7 +125,7 @@ const SelectMovie: React.FC<Props> = ({ handleMovieSelection }: Props) => {
 
   return (
     <AsyncSelect
-      className="w-[min(500px,80vw)] mx-auto mt-12"
+      className="w-[min(500px,80vw)] mx-auto mt-20"
       placeholder="..."
       styles={customStyles}
       isClearable={true}
