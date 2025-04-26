@@ -1,28 +1,49 @@
-import React, { useState } from "react";
-import LocalGameForm from "./localGameForm";
-import LocalGameButtonAPI from "./localGameButtonAPI";
+import React, { useEffect, useState } from "react";
+import LocalGameForm from "./localGameCardForm";
+import LocalGameButtonAPI from "./localGameCardButtonAPI";
 import { movieModel } from "@/state/movieModel";
 import gameModeType from "@/state/gamemodeType";
 
 interface Props {
   setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>;
   setApiResponse: React.Dispatch<React.SetStateAction<movieModel[]>>;
+  initializePlayerNames: (numberOfPlayers: number) => string[];
+  numberOfPlayers: number;
+  setNumberOfPlayers: React.Dispatch<React.SetStateAction<number>>;
+  playerNames: string[];
+  setPlayerNames: React.Dispatch<React.SetStateAction<string[]>>;
+  gameMode: gameModeType;
+  setGameMode: React.Dispatch<React.SetStateAction<gameModeType>>;
 }
 
 const localGame: React.FC<Props> = ({
   setIsPlaying,
   setApiResponse,
+  initializePlayerNames,
+  numberOfPlayers,
+  setNumberOfPlayers,
+  playerNames,
+  setPlayerNames,
+  gameMode,
+  setGameMode,
 }: Props) => {
   // per tenere traccia delle impostazioni della partita
   const [numberOfRounds, setNumberOfRounds] = useState<string>("3");
-  // per tenere traccia della modalità di gioco
-  const [gameMode, setGameMode] = useState<gameModeType>("singleplayer");
-  // per tenere traccia del numero di giocatori
-  const [numberOfPlayers, setNumberOfPlayers] = useState<number>(2);
-  // per tenere traccia del nome dei giocatori
-  const [playerNames, setPlayerNames] = useState<string[]>([]);
+
   // per tenere traccia dei generi esclusi
   const [excludedGenres, setExcludedGenres] = useState<string[]>([]);
+
+  // per inserire i player names di defualt quando cambia number of players
+  useEffect(() => {
+    const newPlayerNames = initializePlayerNames(numberOfPlayers);
+    newPlayerNames.forEach((_, index) => {
+      // se l'utente ha già scritto un nome, lo manteniamo
+      if (playerNames[index] !== undefined) {
+        newPlayerNames[index] = playerNames[index];
+      }
+    });
+    setPlayerNames(newPlayerNames);
+  }, [numberOfPlayers]);
 
   return (
     <>
@@ -42,6 +63,7 @@ const localGame: React.FC<Props> = ({
         numberOfRounds={numberOfRounds}
         setIsPlaying={setIsPlaying}
         setApiResponse={setApiResponse}
+        excludedGenres={excludedGenres}
       />
     </>
   );

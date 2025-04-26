@@ -224,9 +224,13 @@ const localGameForm: React.FC<Props> = ({
                       key={i}
                       color="secondary"
                       variant="faded"
-                      isClearable
                       isRequired
-                      placeholder={"Player " + ++i}
+                      value={playerNames[i]}
+                      onChange={(e) => {
+                        const newPlayerNames = [...playerNames];
+                        newPlayerNames[i] = e.target.value;
+                        setPlayerNames(newPlayerNames);
+                      }}
                     ></Input>
                   ))}
                 </div>

@@ -7,12 +7,14 @@ interface Props {
   numberOfRounds: string;
   setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>;
   setApiResponse: React.Dispatch<React.SetStateAction<movieModel[]>>;
+  excludedGenres: string[];
 }
 
 const LocalGameSearch: React.FC<Props> = ({
   numberOfRounds,
   setIsPlaying,
   setApiResponse,
+  excludedGenres,
 }: Props) => {
   // LOGICA API CALLs
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -29,9 +31,13 @@ const LocalGameSearch: React.FC<Props> = ({
     // preparo l'array dove metterò i film trovati
     const moviesFound: movieModel[] = [];
 
+    // converto excluded genres in una stringa separata da virgole
+    const excludedGenresString = excludedGenres.join(",");
+
     // prendo le pagine random da 1 a 100: andando più in là i film iniziano a diventare meno popolari
     const randomPage = Math.floor(Math.random() * 100) + 1;
-    const queryURLTMDB = `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${randomPage}&sort_by=popularity.desc`;
+
+    const queryURLTMDB = `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${randomPage}&sort_by=popularity.desc&without_genres=${excludedGenresString}`;
     const options = {
       method: "GET",
       headers: {
