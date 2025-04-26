@@ -7,7 +7,7 @@ import { playStatusType } from "@/state/myTypes";
 
 interface Props {
   setPlayStatus: React.Dispatch<React.SetStateAction<playStatusType>>;
-  setApiResponse: React.Dispatch<React.SetStateAction<movieModel[]>>;
+  setMoviesFound: React.Dispatch<React.SetStateAction<movieModel[]>>;
   initializePlayerNames: (numberOfPlayers: number) => string[];
   numberOfPlayers: number;
   setNumberOfPlayers: React.Dispatch<React.SetStateAction<number>>;
@@ -19,7 +19,7 @@ interface Props {
 
 const localGame: React.FC<Props> = ({
   setPlayStatus,
-  setApiResponse,
+  setMoviesFound,
   initializePlayerNames,
   numberOfPlayers,
   setNumberOfPlayers,
@@ -63,7 +63,7 @@ const localGame: React.FC<Props> = ({
       <LocalGameButtonAPI
         numberOfRounds={numberOfRounds}
         setPlayStatus={setPlayStatus}
-        setApiResponse={setApiResponse}
+        setMoviesFound={setMoviesFound}
         excludedGenres={excludedGenres}
       />
     </>

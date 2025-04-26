@@ -16,14 +16,14 @@ import { gameModeType } from "@/state/myTypes";
 import { playStatusType } from "@/state/myTypes";
 
 interface Props {
-  apiResponse: movieModel[];
+  moviesFound: movieModel[];
   gameMode: gameModeType;
   playerNames?: string[];
   setPlayStatus: React.Dispatch<React.SetStateAction<playStatusType>>;
 }
 
 const localGameSingleplayer: React.FC<Props> = ({
-  apiResponse,
+  moviesFound,
   gameMode,
   playerNames,
   setPlayStatus,
@@ -91,18 +91,20 @@ const localGameSingleplayer: React.FC<Props> = ({
     // se le guesses sono finite, non facciamo niente
     if (guesses === 0) return;
     // altrimenti valutiamo se la risposta è corretta o meno
-    if (movieTitle === apiResponse[currentIndex - 1].title) handleMovieRight();
+    if (movieTitle === moviesFound[currentIndex - 1].title) handleMovieRight();
     else handleMovieWrong();
   };
 
   const handleMovieRight = () => {
     // se la risposta è corretta, facciamo partire l'animazione
     // ed incrementiamo il numero di film corretti
+    // ed impostiamo moviesFound[currentIndex - 1] come film corretto
     setCorrectMovies(correctMovies + 1);
     reward();
+    moviesFound[currentIndex - 1].guessed = true;
 
     // se era l'ultima clip, impostiamo playStatus a finished
-    if (currentIndex >= apiResponse.length) {
+    if (currentIndex >= moviesFound.length) {
       // simulo un caricamento
       setTimeout(() => {
         setPlayStatus("finished");
@@ -115,10 +117,12 @@ const localGameSingleplayer: React.FC<Props> = ({
 
   const handleMovieWrong = () => {
     // decrementiamo il numero di guesses
+    // ed impostiamo moviesFound[currentIndex - 1] come film sbagliato
     setGuesses(guesses - 1);
+    moviesFound[currentIndex - 1].guessed = false;
 
     // se le guesses sono finite ed era l'ultima clip, impostiamo playStatus a finished
-    if (guesses === 1 && currentIndex >= apiResponse.length) {
+    if (guesses === 1 && currentIndex >= moviesFound.length) {
       // simulo un caricamento
       setTimeout(() => {
         setPlayStatus("finished");
@@ -130,14 +134,14 @@ const localGameSingleplayer: React.FC<Props> = ({
   // gestione chiamata api per scaricare la prossima clip
   const downloadNextMovie = async () => {
     // se siamo già a fine lista, non facciamo niente
-    if (currentIndex >= apiResponse.length) return;
+    if (currentIndex >= moviesFound.length) return;
 
     // resettiamo il video player ed il numero di guesses
     setGuesses(3);
     setVideoPlayer(null); // in questo modo viene mostrato lo spinner
 
     // prendiamo il prossimo filmato ed incrementiamo l'index
-    const nextMovie: movieModel = apiResponse[currentIndex];
+    const nextMovie: movieModel = moviesFound[currentIndex];
     setCurrentIndex(currentIndex + 1);
 
     // stringa per il video

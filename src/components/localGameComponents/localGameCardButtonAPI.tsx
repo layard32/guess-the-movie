@@ -7,14 +7,14 @@ import { playStatusType } from "@/state/myTypes";
 interface Props {
   numberOfRounds: string;
   setPlayStatus: React.Dispatch<React.SetStateAction<playStatusType>>;
-  setApiResponse: React.Dispatch<React.SetStateAction<movieModel[]>>;
+  setMoviesFound: React.Dispatch<React.SetStateAction<movieModel[]>>;
   excludedGenres: string[];
 }
 
 const LocalGameSearch: React.FC<Props> = ({
   numberOfRounds,
   setPlayStatus,
-  setApiResponse,
+  setMoviesFound,
   excludedGenres,
 }: Props) => {
   // LOGICA API CALLs
@@ -27,7 +27,7 @@ const LocalGameSearch: React.FC<Props> = ({
     // reset degli stati
     setIsLoading(true);
     setPlayStatus("waiting");
-    setApiResponse([]);
+    setMoviesFound([]);
 
     // preparo l'array dove metterò i film trovati
     const moviesFound: movieModel[] = [];
@@ -82,6 +82,7 @@ const LocalGameSearch: React.FC<Props> = ({
               download: hit._source.download,
               title: hit._source.movie_title,
               poster: hit._source.movie_poster,
+              guessed: false,
             }))
             .sort(() => 0.5 - Math.random())[0];
 
@@ -104,7 +105,7 @@ const LocalGameSearch: React.FC<Props> = ({
     } finally {
       // setto l'api response con l'array di film trovati
       console.log("Movies found: ", moviesFound);
-      setApiResponse(moviesFound);
+      setMoviesFound(moviesFound);
 
       // resetto lo stato di caricamento dopo un breve timeout
       setTimeout(() => {

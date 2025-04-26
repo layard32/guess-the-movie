@@ -15,7 +15,7 @@ export default function IndexPage() {
   const [playStatus, setPlayStatus] = useState<playStatusType>("waiting");
 
   // per tenere traccia dell'api response (ottenuta da localGameButtonAPI)
-  const [apiResponse, setApiResponse] = useState<movieModel[]>([]);
+  const [moviesFound, setMoviesFound] = useState<movieModel[]>([]);
 
   // per tenere traccia della modalità di gioco
   const [gameMode, setGameMode] = useState<gameModeType>("singleplayer");
@@ -41,7 +41,7 @@ export default function IndexPage() {
     return (
       <GameLayout>
         <LocalGameSingleplayer
-          apiResponse={apiResponse}
+          moviesFound={moviesFound}
           gameMode={gameMode}
           setPlayStatus={setPlayStatus}
           {...(gameMode === "group" || gameMode === "1v1"
@@ -56,7 +56,7 @@ export default function IndexPage() {
   if (playStatus === "finished") {
     return (
       <DefaultLayout>
-        <LocalGameResult />
+        <LocalGameResult moviesFound={moviesFound} />
       </DefaultLayout>
     );
   }
@@ -71,7 +71,7 @@ export default function IndexPage() {
               <CardBody>
                 <LocalGameCard
                   setPlayStatus={setPlayStatus}
-                  setApiResponse={setApiResponse}
+                  setMoviesFound={setMoviesFound}
                   setGameMode={setGameMode}
                   gameMode={gameMode}
                   setNumberOfPlayers={setNumberOfPlayers}
