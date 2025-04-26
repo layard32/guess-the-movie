@@ -10,11 +10,13 @@ import { Button } from "@heroui/button";
 interface Props {
   emailValidation: (value: string) => string | null;
   closeModal?: () => void;
+  handleOpenChange?: () => void;
 }
 
 const forgottenPasswordForm: React.FC<Props> = ({
   emailValidation,
   closeModal,
+  handleOpenChange,
 }: Props) => {
   // per evitare spam di submit
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -36,6 +38,7 @@ const forgottenPasswordForm: React.FC<Props> = ({
       // a prescindere dal risultato, mostriamo un modale di successo
       // se la registrazione è riuscita, chiudiamo messaggio e mostriamo il toast
       closeModal?.();
+      handleOpenChange?.();
       addToast({
         title: "Password reset email sent",
         description: "Check your email to reset your password",

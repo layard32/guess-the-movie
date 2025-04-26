@@ -37,7 +37,7 @@ const AuthModal: React.FC<Props> = ({
           ? "forgetPassword"
           : "signin"
   );
-  const handleOpenChange = (isOpen: boolean) => {
+  const handleOpenChange = () => {
     onOpenChange();
     setCurrentModal(
       login
@@ -174,6 +174,7 @@ const AuthModal: React.FC<Props> = ({
                   <ForgottenPasswordForm
                     closeModal={onOpenChange}
                     emailValidation={emailValidation}
+                    handleOpenChange={handleOpenChange}
                   />
                 </ModalBody>
               </>

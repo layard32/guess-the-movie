@@ -92,7 +92,7 @@ const localGameForm: React.FC<Props> = ({
         <Select
           isRequired
           defaultSelectedKeys={[numberOfRounds]}
-          label="Genres "
+          label="Number of rounds"
           className="w-4/5"
           color="secondary"
           variant="faded"

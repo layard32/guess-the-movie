@@ -116,7 +116,7 @@ const LocalGameSearch: React.FC<Props> = ({
         isLoading={isLoading}
         color="primary"
         variant="shadow"
-        className="w-2/5 mx-auto mt-2 mb-1"
+        className="w-2/5 mx-auto mt-2 mb-1.5"
       >
         Start the game
       </Button>
