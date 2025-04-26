@@ -8,6 +8,8 @@ import { PiListNumbers } from "react-icons/pi";
 import React from "react";
 import gameModeType from "@/state/gamemodeType";
 import { Accordion, AccordionItem } from "@heroui/accordion";
+import { NumberInput } from "@heroui/number-input";
+import { Input } from "@heroui/input";
 
 interface Props {
   numberOfRounds: string;
@@ -75,7 +77,7 @@ const localGameForm: React.FC<Props> = ({
               </div>
             </div>
           </SelectItem>
-          <SelectItem key="Group" textValue="Group">
+          <SelectItem key="group" textValue="Group">
             <div className="flex gap-2 items-center">
               <MdGroups3 className="flex-shrink-0" />
               <div className="flex flex-col">
@@ -94,7 +96,7 @@ const localGameForm: React.FC<Props> = ({
           defaultSelectedKeys={[numberOfRounds]}
           label="Number of rounds"
           className="w-4/5"
-          color="secondary"
+          color="primary"
           variant="faded"
           description="Choose the genres that must be included in the game"
           startContent={<PiListNumbers />}
@@ -136,9 +138,29 @@ const localGameForm: React.FC<Props> = ({
           </SelectItem>
         </Select>
 
-        <Accordion className="w-4/5 -mt-3">
+        {gameMode === "group" && (
+          <NumberInput
+            className="w-3/5"
+            label="Number of players"
+            color="secondary"
+            variant="faded"
+            size="md"
+            isRequired
+            description="Enter the number of players (min 2, max 4)"
+            minValue={2}
+            maxValue={4}
+            defaultValue={numberOfPlayers}
+            onChange={(value) => {
+              if (typeof value === "number") {
+                setNumberOfPlayers(value);
+              }
+            }}
+          />
+        )}
+
+        <Accordion className="w-4/5 -mt-3" defaultSelectedKeys={["genres"]}>
           <AccordionItem key="genres" title="Advanced options">
-            <div className="flex justify-center">
+            <div className="flex justify-center flex-col items-center gap-3">
               <Select
                 selectionMode="multiple"
                 defaultSelectedKeys={excludedGenres.flat()}
@@ -195,6 +217,20 @@ const localGameForm: React.FC<Props> = ({
                   </div>
                 </SelectItem>
               </Select>
+              {(gameMode === "group" || gameMode === "1v1") && (
+                <div className="w-4/5 flex flex-col gap-4">
+                  {Array.from({ length: numberOfPlayers }).map((_, i) => (
+                    <Input
+                      key={i}
+                      color="secondary"
+                      variant="faded"
+                      isClearable
+                      isRequired
+                      placeholder={"Player " + ++i}
+                    ></Input>
+                  ))}
+                </div>
+              )}
             </div>
           </AccordionItem>
         </Accordion>

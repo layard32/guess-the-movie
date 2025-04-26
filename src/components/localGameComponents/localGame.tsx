@@ -18,7 +18,7 @@ const localGame: React.FC<Props> = ({
   // per tenere traccia della modalità di gioco
   const [gameMode, setGameMode] = useState<gameModeType>("singleplayer");
   // per tenere traccia del numero di giocatori
-  const [numberOfPlayers, setNumberOfPlayers] = useState<number>(1);
+  const [numberOfPlayers, setNumberOfPlayers] = useState<number>(2);
   // per tenere traccia del nome dei giocatori
   const [playerNames, setPlayerNames] = useState<string[]>([]);
   // per tenere traccia dei generi esclusi
