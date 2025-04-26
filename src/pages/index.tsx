@@ -35,7 +35,11 @@ export default function IndexPage() {
 
   return isPlayingLocal ? (
     <GameLayout>
-      <LocalGameSingleplayer apiResponse={apiResponse} />
+      <LocalGameSingleplayer
+        apiResponse={apiResponse}
+        gameMode={gameMode}
+        {...(gameMode === "group" || gameMode === "1v1" ? { playerNames } : {})}
+      />
     </GameLayout>
   ) : (
     <DefaultLayout>

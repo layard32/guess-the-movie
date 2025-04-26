@@ -12,12 +12,19 @@ import CountdownComponent from "../countdownWithSound";
 import { Spinner } from "@heroui/spinner";
 import { motion } from "motion/react";
 import { AnimatePresence } from "motion/react";
+import gameModeType from "@/state/gamemodeType";
 
 interface Props {
   apiResponse: movieModel[];
+  gameMode: gameModeType;
+  playerNames?: string[];
 }
 
-const localGameSingleplayer: React.FC<Props> = ({ apiResponse }: Props) => {
+const localGameSingleplayer: React.FC<Props> = ({
+  apiResponse,
+  gameMode,
+  playerNames,
+}: Props) => {
   // GESTIONE ANIMAZIONE REWARD
   const { reward, isAnimating } = useReward("rewardId", "confetti", {
     angle: 90,
