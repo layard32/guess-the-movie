@@ -7,22 +7,27 @@ import { MdGroups3 } from "react-icons/md";
 import { PiListNumbers } from "react-icons/pi";
 import LocalGameSearch from "./localGameButtonAPI";
 import React, { useState } from "react";
+import gameModeType from "@/state/gamemodeType";
 
 interface Props {
   numberOfRounds: string;
   setNumberOfRounds: React.Dispatch<React.SetStateAction<string>>;
+  gameMode: gameModeType;
+  setGameMode: React.Dispatch<React.SetStateAction<gameModeType>>;
 }
 
 const localGameForm: React.FC<Props> = ({
   numberOfRounds,
   setNumberOfRounds,
+  gameMode,
+  setGameMode,
 }: Props) => {
   return (
     <>
       <Form className="flex flex-col gap-4 justify-center items-center py-2.5">
         <Select
           isRequired
-          defaultSelectedKeys={["singleplayer"]}
+          defaultSelectedKeys={[gameMode]}
           label="Game Mode"
           className="w-4/5"
           color="primary"
@@ -30,6 +35,10 @@ const localGameForm: React.FC<Props> = ({
           description="Choose a game mode"
           startContent={<IoGameControllerOutline />}
           size="lg"
+          selectedKeys={[gameMode]}
+          onSelectionChange={(keys) =>
+            setGameMode(Array.from(keys)[0] as gameModeType)
+          }
         >
           <SelectItem key="singleplayer" textValue="Singleplayer">
             <div className="flex gap-2 items-center">
