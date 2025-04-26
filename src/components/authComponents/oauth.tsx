@@ -15,9 +15,6 @@ const oauth = () => {
   // la logica viene presa dallo store, precisamente dal thunks loginwithoauth
   const handleLogin = async (provider: Provider) => {
     dispatch(loginWithOAuth({ provider }));
-    // imposto una flag del local storage su true
-    // così da mostrare un toast dopo reindirizzamento grazie all'use effect in app.tsx
-    localStorage.setItem("loginSuccess", "true");
   };
 
   // restituisco un insieme di pulsanti per fare il login con i vari provider

@@ -45,7 +45,11 @@ export const loginWithOAuth = createAsyncThunk(
 export const fetchSession = createAsyncThunk("auth/fetchSession", async () => {
   const { data, error } = await supabase.auth.getSession();
   if (error) throw new Error(error.message);
-  return data.session;
+    // se c'è effettivamente una sessione, allora setto una flag nello storage per mostrare un toast
+    if (data.session) {
+      localStorage.setItem("loginSuccess", "true");
+    }
+    return data.session;
 });
 
 // Logout
