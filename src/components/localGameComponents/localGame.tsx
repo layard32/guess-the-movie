@@ -21,6 +21,8 @@ const localGame: React.FC<Props> = ({
   const [numberOfPlayers, setNumberOfPlayers] = useState<number>(1);
   // per tenere traccia del nome dei giocatori
   const [playerNames, setPlayerNames] = useState<string[]>([]);
+  // per tenere traccia dei generi esclusi
+  const [excludedGenres, setExcludedGenres] = useState<string[]>([]);
 
   return (
     <>
@@ -33,6 +35,8 @@ const localGame: React.FC<Props> = ({
         numberOfPlayers={numberOfPlayers}
         setPlayerNames={setPlayerNames}
         playerNames={playerNames}
+        excludedGenres={excludedGenres}
+        setExcludedGenres={setExcludedGenres}
       />
       <LocalGameButtonAPI
         numberOfRounds={numberOfRounds}

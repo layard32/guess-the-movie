@@ -5,9 +5,9 @@ import { GiTabletopPlayers } from "react-icons/gi";
 import { IoIosPhonePortrait } from "react-icons/io";
 import { MdGroups3 } from "react-icons/md";
 import { PiListNumbers } from "react-icons/pi";
-import LocalGameSearch from "./localGameButtonAPI";
-import React, { useState } from "react";
+import React from "react";
 import gameModeType from "@/state/gamemodeType";
+import { Accordion, AccordionItem } from "@heroui/accordion";
 
 interface Props {
   numberOfRounds: string;
@@ -18,6 +18,8 @@ interface Props {
   setNumberOfPlayers: React.Dispatch<React.SetStateAction<number>>;
   playerNames: string[];
   setPlayerNames: React.Dispatch<React.SetStateAction<string[]>>;
+  excludedGenres: string[];
+  setExcludedGenres: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const localGameForm: React.FC<Props> = ({
@@ -29,10 +31,12 @@ const localGameForm: React.FC<Props> = ({
   setNumberOfPlayers,
   playerNames,
   setPlayerNames,
+  excludedGenres,
+  setExcludedGenres,
 }: Props) => {
   return (
     <>
-      <Form className="flex flex-col gap-4 justify-center items-center py-2.5">
+      <Form className="flex flex-col gap-4 justify-center items-center py-2.5 overflow-hidden">
         <Select
           isRequired
           defaultSelectedKeys={[gameMode]}
@@ -88,11 +92,11 @@ const localGameForm: React.FC<Props> = ({
         <Select
           isRequired
           defaultSelectedKeys={[numberOfRounds]}
-          label="Number of rounds"
+          label="Genres "
           className="w-4/5"
           color="secondary"
           variant="faded"
-          description="Choose the number of rounds"
+          description="Choose the genres that must be included in the game"
           startContent={<PiListNumbers />}
           size="lg"
           selectedKeys={[numberOfRounds]}
@@ -131,6 +135,69 @@ const localGameForm: React.FC<Props> = ({
             </div>
           </SelectItem>
         </Select>
+
+        <Accordion className="w-4/5 -mt-3">
+          <AccordionItem key="genres" title="Advanced options">
+            <div className="flex justify-center">
+              <Select
+                selectionMode="multiple"
+                defaultSelectedKeys={excludedGenres.flat()}
+                label="Excluded genres"
+                className="w-4/5"
+                color="secondary"
+                variant="faded"
+                description="Choose genres to exclude from the game (max 3)"
+                size="md"
+                selectedKeys={excludedGenres}
+                onSelectionChange={(keys) => {
+                  // semplice validazione
+                  // solamente se il numero di generi esclusi è minore o uguale a 3
+                  if (Array.from(keys).length <= 3) {
+                    setExcludedGenres(Array.from(keys) as string[]);
+                  }
+                }}
+              >
+                <SelectItem key="28" textValue="Action">
+                  <div className="flex gap-2 items-center">
+                    <div className="flex flex-col">
+                      <span className="text-small">Action</span>
+                    </div>
+                  </div>
+                </SelectItem>
+                <SelectItem key="12" textValue="Adventure">
+                  <div className="flex gap-2 items-center">
+                    <div className="flex flex-col">
+                      <span className="text-small">Adventure</span>
+                    </div>
+                  </div>
+                </SelectItem>
+                <SelectItem key="16" textValue="Animation">
+                  <div className="flex gap-2 items-center">
+                    <div className="flex flex-col">
+                      <span className="text-small">
+                        Animation (both western and anime)
+                      </span>
+                    </div>
+                  </div>
+                </SelectItem>
+                <SelectItem key="10749" textValue="Romance">
+                  <div className="flex gap-2 items-center">
+                    <div className="flex flex-col">
+                      <span className="text-small">Romance</span>
+                    </div>
+                  </div>
+                </SelectItem>
+                <SelectItem key="27" textValue="Horror">
+                  <div className="flex gap-2 items-center">
+                    <div className="flex flex-col">
+                      <span className="text-small">Horror</span>
+                    </div>
+                  </div>
+                </SelectItem>
+              </Select>
+            </div>
+          </AccordionItem>
+        </Accordion>
       </Form>
     </>
   );
