@@ -14,6 +14,10 @@ interface Props {
   setNumberOfRounds: React.Dispatch<React.SetStateAction<string>>;
   gameMode: gameModeType;
   setGameMode: React.Dispatch<React.SetStateAction<gameModeType>>;
+  numberOfPlayers: number;
+  setNumberOfPlayers: React.Dispatch<React.SetStateAction<number>>;
+  playerNames: string[];
+  setPlayerNames: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const localGameForm: React.FC<Props> = ({
@@ -21,6 +25,10 @@ const localGameForm: React.FC<Props> = ({
   setNumberOfRounds,
   gameMode,
   setGameMode,
+  numberOfPlayers,
+  setNumberOfPlayers,
+  playerNames,
+  setPlayerNames,
 }: Props) => {
   return (
     <>
@@ -76,6 +84,7 @@ const localGameForm: React.FC<Props> = ({
             </div>
           </SelectItem>
         </Select>
+
         <Select
           isRequired
           defaultSelectedKeys={[numberOfRounds]}
