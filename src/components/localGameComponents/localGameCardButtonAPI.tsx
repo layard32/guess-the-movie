@@ -2,17 +2,18 @@ import React, { useState } from "react";
 import { Button } from "@heroui/button";
 import { addToast } from "@heroui/toast";
 import { movieModel } from "@/state/movieModel";
+import { playStatusType } from "@/state/myTypes";
 
 interface Props {
   numberOfRounds: string;
-  setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>;
+  setPlayStatus: React.Dispatch<React.SetStateAction<playStatusType>>;
   setApiResponse: React.Dispatch<React.SetStateAction<movieModel[]>>;
   excludedGenres: string[];
 }
 
 const LocalGameSearch: React.FC<Props> = ({
   numberOfRounds,
-  setIsPlaying,
+  setPlayStatus,
   setApiResponse,
   excludedGenres,
 }: Props) => {
@@ -25,7 +26,7 @@ const LocalGameSearch: React.FC<Props> = ({
   const handleSearch = async () => {
     // reset degli stati
     setIsLoading(true);
-    setIsPlaying(false);
+    setPlayStatus("waiting");
     setApiResponse([]);
 
     // preparo l'array dove metterò i film trovati
@@ -108,7 +109,7 @@ const LocalGameSearch: React.FC<Props> = ({
       // resetto lo stato di caricamento dopo un breve timeout
       setTimeout(() => {
         setIsLoading(false);
-        setIsPlaying(true);
+        setPlayStatus("playing");
       }, 3000);
     }
   };

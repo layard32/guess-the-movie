@@ -12,18 +12,21 @@ import CountdownComponent from "../countdownWithSound";
 import { Spinner } from "@heroui/spinner";
 import { motion } from "motion/react";
 import { AnimatePresence } from "motion/react";
-import gameModeType from "@/state/gamemodeType";
+import { gameModeType } from "@/state/myTypes";
+import { playStatusType } from "@/state/myTypes";
 
 interface Props {
   apiResponse: movieModel[];
   gameMode: gameModeType;
   playerNames?: string[];
+  setPlayStatus: React.Dispatch<React.SetStateAction<playStatusType>>;
 }
 
 const localGameSingleplayer: React.FC<Props> = ({
   apiResponse,
   gameMode,
   playerNames,
+  setPlayStatus,
 }: Props) => {
   // GESTIONE ANIMAZIONE REWARD
   const { reward, isAnimating } = useReward("rewardId", "confetti", {
@@ -98,15 +101,30 @@ const localGameSingleplayer: React.FC<Props> = ({
     setCorrectMovies(correctMovies + 1);
     reward();
 
-    // poi scarichiamo la prossima clip
-    downloadNextMovie();
+    // se era l'ultima clip, impostiamo playStatus a finished
+    if (currentIndex >= apiResponse.length) {
+      // simulo un caricamento
+      setTimeout(() => {
+        setPlayStatus("finished");
+      }, 1000);
+    } else {
+      // altrimenti scarichiamo la prossima clip
+      downloadNextMovie();
+    }
   };
 
   const handleMovieWrong = () => {
     // decrementiamo il numero di guesses
     setGuesses(guesses - 1);
-    // se le guesses sono finite, scarichiamo la prossima clip, altrimenti non facciamo niente
-    if (guesses === 1) downloadNextMovie();
+
+    // se le guesses sono finite ed era l'ultima clip, impostiamo playStatus a finished
+    if (guesses === 1 && currentIndex >= apiResponse.length) {
+      // simulo un caricamento
+      setTimeout(() => {
+        setPlayStatus("finished");
+      }, 1000);
+      // se invece non è l'ultima clip, scarichiamo la prossima
+    } else if (guesses === 1) downloadNextMovie();
   };
 
   // gestione chiamata api per scaricare la prossima clip

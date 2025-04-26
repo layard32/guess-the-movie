@@ -6,7 +6,7 @@ import { IoIosPhonePortrait } from "react-icons/io";
 import { MdGroups3 } from "react-icons/md";
 import { PiListNumbers } from "react-icons/pi";
 import React from "react";
-import gameModeType from "@/state/gamemodeType";
+import gameModeType from "@/state/myTypes";
 import { Accordion, AccordionItem } from "@heroui/accordion";
 import { NumberInput } from "@heroui/number-input";
 import { Input } from "@heroui/input";

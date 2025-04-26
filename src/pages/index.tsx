@@ -1,16 +1,18 @@
 import DefaultLayout from "@/layouts/default";
 import GameLayout from "@/layouts/game";
 import { Tabs, Tab } from "@heroui/tabs";
-import LocalGame from "@/components/localGameComponents/localGameCard";
+import LocalGameCard from "@/components/localGameComponents/localGameCard";
 import { Card, CardBody } from "@heroui/card";
 import { useState } from "react";
 import LocalGameSingleplayer from "../components/localGameComponents/localGameSingleplayer";
 import { movieModel } from "@/state/movieModel";
-import gameModeType from "@/state/gamemodeType";
+import { gameModeType } from "@/state/myTypes";
+import { playStatusType } from "@/state/myTypes";
+import LocalGameResult from "@/components/localGameComponents/localGameResult";
 
 export default function IndexPage() {
-  // per tenere traccia se il gioco locale è partito o meno
-  const [isPlayingLocal, setIsPlayingLocal] = useState<boolean>(false);
+  // per tenere traccia dello stato del gioco
+  const [playStatus, setPlayStatus] = useState<playStatusType>("waiting");
 
   // per tenere traccia dell'api response (ottenuta da localGameButtonAPI)
   const [apiResponse, setApiResponse] = useState<movieModel[]>([]);
@@ -33,23 +35,42 @@ export default function IndexPage() {
     initializePlayerNames(numberOfPlayers)
   );
 
-  return isPlayingLocal ? (
-    <GameLayout>
-      <LocalGameSingleplayer
-        apiResponse={apiResponse}
-        gameMode={gameMode}
-        {...(gameMode === "group" || gameMode === "1v1" ? { playerNames } : {})}
-      />
-    </GameLayout>
-  ) : (
+  // RENDERING CONDIZIONALE A SECONDA DELLO STATO DEL GIOCO
+  // se il gioco è in corso mostro localgamesingleplayer dentro gamelayout
+  if (playStatus === "playing") {
+    return (
+      <GameLayout>
+        <LocalGameSingleplayer
+          apiResponse={apiResponse}
+          gameMode={gameMode}
+          setPlayStatus={setPlayStatus}
+          {...(gameMode === "group" || gameMode === "1v1"
+            ? { playerNames }
+            : {})}
+        />
+      </GameLayout>
+    );
+  }
+
+  // se il gioco è finito, mostro localgameresult
+  if (playStatus === "finished") {
+    return (
+      <DefaultLayout>
+        <LocalGameResult />
+      </DefaultLayout>
+    );
+  }
+
+  // se il gioco è in attesa, mostro la classica schermata con il form
+  return (
     <DefaultLayout>
       <div className="flex w-full flex-col justify-center items-center">
         <Tabs size="lg" className="mb-2.5">
           <Tab key="Local" title="Local">
             <Card className="w-[min(500px,80vw)]">
               <CardBody>
-                <LocalGame
-                  setIsPlaying={setIsPlayingLocal}
+                <LocalGameCard
+                  setPlayStatus={setPlayStatus}
                   setApiResponse={setApiResponse}
                   setGameMode={setGameMode}
                   gameMode={gameMode}

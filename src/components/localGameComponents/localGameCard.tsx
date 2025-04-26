@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import LocalGameForm from "./localGameCardForm";
 import LocalGameButtonAPI from "./localGameCardButtonAPI";
 import { movieModel } from "@/state/movieModel";
-import gameModeType from "@/state/gamemodeType";
+import { gameModeType } from "@/state/myTypes";
+import { playStatusType } from "@/state/myTypes";
 
 interface Props {
-  setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>;
+  setPlayStatus: React.Dispatch<React.SetStateAction<playStatusType>>;
   setApiResponse: React.Dispatch<React.SetStateAction<movieModel[]>>;
   initializePlayerNames: (numberOfPlayers: number) => string[];
   numberOfPlayers: number;
@@ -17,7 +18,7 @@ interface Props {
 }
 
 const localGame: React.FC<Props> = ({
-  setIsPlaying,
+  setPlayStatus,
   setApiResponse,
   initializePlayerNames,
   numberOfPlayers,
@@ -61,7 +62,7 @@ const localGame: React.FC<Props> = ({
       />
       <LocalGameButtonAPI
         numberOfRounds={numberOfRounds}
-        setIsPlaying={setIsPlaying}
+        setPlayStatus={setPlayStatus}
         setApiResponse={setApiResponse}
         excludedGenres={excludedGenres}
       />
