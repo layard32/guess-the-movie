@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useCallback } from "react";
 import AsyncSelect from "react-select/async";
+import debounce from "lodash.debounce";
 
 // definiamo lo stile personalizzato tramite props, come da documentazione di react-select
 const customStyles = {
@@ -91,7 +92,7 @@ interface Props {
 
 const SelectMovie: React.FC<Props> = ({ handleMovieSelection }: Props) => {
   // carichiamo i dati da tmdb per il select
-  const loadMovies = async (inputMovieTitle: string) => {
+  const fetchMovies = async (inputMovieTitle: string) => {
     const TMDB_token = import.meta.env.VITE_TMDB_TOKEN;
     const url = `https://api.themoviedb.org/3/search/movie?include_adult=false&language=en-US&page=1&query=${inputMovieTitle}`;
     const options = {
@@ -122,6 +123,16 @@ const SelectMovie: React.FC<Props> = ({ handleMovieSelection }: Props) => {
       return [];
     }
   };
+
+  // applico un debouncer (tramite libreria lodash) per evitare di fare troppe chiamate a tmdb
+  const loadMovies = useCallback(
+    debounce((inputValue: string, callback: any) => {
+      fetchMovies(inputValue).then((movies) => {
+        callback(movies);
+      });
+    }, 300),
+    []
+  );
 
   return (
     <AsyncSelect

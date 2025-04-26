@@ -38,6 +38,7 @@
     "@supabase/supabase-js": "^2.49.1",
     "clsx": "2.1.1",
     "framer-motion": "11.15.0",
+    "lodash.debounce": "^4.0.8",
     "motion": "^12.7.4",
     "react": "18.3.1",
     "react-countdown": "^2.3.6",
@@ -53,6 +54,7 @@
     "wouter": "^3.6.0"
   },
   "devDependencies": {
+    "@types/lodash.debounce": "^4.0.9",
     "@types/node": "20.5.7",
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
