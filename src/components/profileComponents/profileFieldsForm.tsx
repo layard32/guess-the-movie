@@ -8,7 +8,7 @@ import {
   passwordValidation,
 } from "@/state/userValidation";
 import { useSelector } from "react-redux";
-import { selectUser } from "@/state/selectors";
+import { selectUser } from "@/state/authSlice";
 import giveUsername from "@/hooks/giveUsername";
 import { addToast } from "@heroui/toast";
 import { useDispatch } from "react-redux";

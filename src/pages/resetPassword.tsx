@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import DefaultLayout from "@/layouts/default";
 import ResetPasswordForm from "@/components/authComponents/resetPasswordForm";
-import authRedirect from "../hooks/authRedirect";
+import authRedirect from "../hooks/authRedirectTo";
 import { Card, CardBody } from "@heroui/card";
 
 const resetPassword = () => {

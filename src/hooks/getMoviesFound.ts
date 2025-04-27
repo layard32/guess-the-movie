@@ -1,52 +1,47 @@
-import React, { useState } from "react";
-import { Button } from "@heroui/button";
-import { addToast } from "@heroui/toast";
+import { setGameStatus, setMoviesFound, selectNumberOfRounds, selectExcludedGenres } from "@/state/gameSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/state/store";
 import { movieModel } from "@/state/movieModel";
-import { playStatusType } from "@/state/myTypes";
+import { addToast } from "@heroui/toast";
 
-interface Props {
-  numberOfRounds: string;
-  setPlayStatus: React.Dispatch<React.SetStateAction<playStatusType>>;
-  setMoviesFound: React.Dispatch<React.SetStateAction<movieModel[]>>;
-  excludedGenres: string[];
-}
+// * setIsLoading viene fornito da localGameFormButtonWithAPI.tsx e serve per mostrare
+// il caricamento all'interno del bottone
+// * gli altri stati vengono importati e settati tramite lo store
 
-const LocalGameSearch: React.FC<Props> = ({
-  numberOfRounds,
-  setPlayStatus,
-  setMoviesFound,
-  excludedGenres,
-}: Props) => {
-  // LOGICA API CALLs
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const clipcafeKey = import.meta.env.VITE_CLIPCAFE_KEY;
-  const TMDB_token = import.meta.env.VITE_TMDB_TOKEN;
-  const numberOfRoundsInt = parseInt(numberOfRounds, 10);
+export function useGetMoviesFound() {
+  const numberOfRounds: number = useSelector(selectNumberOfRounds);
+  const excludedGenres: string[] = useSelector(selectExcludedGenres);
+  const dispatch: AppDispatch = useDispatch();
 
-  const handleSearch = async () => {
-    // reset degli stati
+  // la funzione ottiene moviesfound tramite le api di clipcafe e tmdb
+  const getMoviesFound = async (
+    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
+    // 1. reset degli stati per isloading, playstatus e moviesfound
     setIsLoading(true);
-    setPlayStatus("waiting");
-    setMoviesFound([]);
+    dispatch(setGameStatus("waiting"));
+    dispatch(setMoviesFound([]));
 
-    // preparo l'array dove metterò i film trovati
+    // 2. preparo l'array dove metterò i film trovati
     const moviesFound: movieModel[] = [];
 
-    // converto excluded genres in una stringa separata da virgole
-    const excludedGenresString = excludedGenres.join(",");
+    // 3. converto excluded genres in una stringa separata da virgole
+    const excludedGenresString: string = excludedGenres.join(",");
 
-    // prendo le pagine random da 1 a 100: andando più in là i film iniziano a diventare meno popolari
-    const randomPage = Math.floor(Math.random() * 100) + 1;
+    // 3. prendo le pagine random da 1 a 100: andando più in là i film iniziano a diventare meno popolari
+    const randomPage: number = Math.floor(Math.random() * 100) + 1;
 
+    // 4. preparo l'url per la chiamata a TMDB
     const queryURLTMDB = `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${randomPage}&sort_by=popularity.desc&without_genres=${excludedGenresString}`;
     const options = {
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${TMDB_token}`,
+        Authorization: `Bearer ${import.meta.env.VITE_TMDB_TOKEN}`,
       },
     };
 
+    // 5. wrappo la chiamata in un try/catch
     try {
       // chiamata a TMDB
       const responseTMDB = await fetch(queryURLTMDB, options);
@@ -61,12 +56,12 @@ const LocalGameSearch: React.FC<Props> = ({
       const movieTitles = dataTMDB.results
         .map((movie: any) => movie.title)
         .sort(() => 0.5 - Math.random())
-        .slice(0, numberOfRoundsInt + 4);
+        .slice(0, numberOfRounds + 4);
 
-      movieTitles.forEach(async (movieTitle: string) => {
-        // per ogni film controllo se ci sono clip disponibili su clipcafe
-        // se ci sono, aggiungo l'oggetto movieModel all'array moviesFound
-        const queryURLCC = `https://api.clip.cafe/?api_key=${clipcafeKey}&movie_title=${movieTitle}&size=3&duration=20-60`;
+      // per ogni film controllo se ci sono clip disponibili su clipcafe
+      // se ci sono, aggiungo l'oggetto movieModel all'array moviesFound
+      for (const movieTitle of movieTitles) {
+        const queryURLCC = `https://api.clip.cafe/?api_key=${import.meta.env.VITE_CLIPCAFE_KEY}&movie_title=${movieTitle}&size=3&duration=20-60`;
         const responseCC = await fetch(queryURLCC);
         if (!responseCC.ok)
           throw new Error(
@@ -87,10 +82,10 @@ const LocalGameSearch: React.FC<Props> = ({
             .sort(() => 0.5 - Math.random())[0];
 
           // l'aggiungo all'array, soltanto se moviesFound non è già pieno
-          if (uniqueClip && moviesFound.length < numberOfRoundsInt)
+          if (uniqueClip && moviesFound.length < numberOfRounds)
             moviesFound.push(uniqueClip);
         }
-      });
+      }
     } catch (error) {
       addToast({
         title: "Error when processing the movies",
@@ -104,32 +99,15 @@ const LocalGameSearch: React.FC<Props> = ({
       });
     } finally {
       // setto l'api response con l'array di film trovati
-      console.log("Movies found: ", moviesFound);
-      setMoviesFound(moviesFound);
+      dispatch(setMoviesFound(moviesFound));
 
-      // resetto lo stato di caricamento dopo un breve timeout
+      // resetto lo stato di caricamento dopo un breve timeout per simulare un caricamento
       setTimeout(() => {
         setIsLoading(false);
-        setPlayStatus("playing");
+        dispatch(setGameStatus("playing"));
       }, 3000);
     }
   };
 
-  return (
-    <>
-      <Button
-        onPress={handleSearch}
-        size={"lg"}
-        disabled={isLoading}
-        isLoading={isLoading}
-        color="primary"
-        variant="shadow"
-        className="w-2/5 mx-auto mt-2 mb-1.5"
-      >
-        Start the game
-      </Button>
-    </>
-  );
-};
-
-export default LocalGameSearch;
+  return { getMoviesFound };
+}

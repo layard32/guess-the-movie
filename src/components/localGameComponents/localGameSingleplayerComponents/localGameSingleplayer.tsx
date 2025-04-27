@@ -1,59 +1,82 @@
-import React, { useEffect, useRef } from "react";
-import { useState } from "react";
-import { addToast } from "@heroui/toast";
+// import da react
+import React, { useEffect, useRef, useState } from "react";
+
+// import da heroui
+import { Spinner } from "@heroui/spinner";
+import { Button } from "@heroui/button";
+import { ThemeSwitch } from "@/components/theme-switch";
+
+// import da libreria react-rewards
+import { useReward } from "react-rewards";
+
+// import di icone
 import { FaHeart } from "react-icons/fa";
 import { FaAward } from "react-icons/fa";
-import { ThemeSwitch } from "@/components/theme-switch";
+
+// import per stati
 import { movieModel } from "@/state/movieModel";
+import { useDispatch } from "react-redux";
+import {
+  selectCurrentClipIndex,
+  selectMoviesFound,
+  selectGameStatus,
+  setGameStatus,
+} from "@/state/gameSlice";
+import { useSelector } from "react-redux";
+import { AppDispatch } from "@/state/store";
+
+// import di componenti
 import SelectMovie from "@/components/selectMovie";
-import { useReward } from "react-rewards";
-import { Button } from "@heroui/button";
-import CountdownComponent from "../countdownWithSound";
-import { Spinner } from "@heroui/spinner";
+import CountdownComponent from "@/components/countdownWithSound";
+
+// import per animazioni da framer-motion
 import { motion } from "motion/react";
 import { AnimatePresence } from "motion/react";
-import { gameModeType } from "@/state/myTypes";
-import { playStatusType } from "@/state/myTypes";
 
-interface Props {
-  moviesFound: movieModel[];
-  gameMode: gameModeType;
-  playerNames?: string[];
-  setPlayStatus: React.Dispatch<React.SetStateAction<playStatusType>>;
-}
+// import di tipi
+import { gameStatusType } from "@/state/myTypes";
 
-const localGameSingleplayer: React.FC<Props> = ({
-  moviesFound,
-  gameMode,
-  playerNames,
-  setPlayStatus,
-}: Props) => {
-  // GESTIONE ANIMAZIONE REWARD
+// import di custom hooks
+import { useDownloadNextClip } from "@/hooks/downloadNextClip";
+
+const localGameSingleplayer: React.FC = () => {
+  // * per la risposta corretta utilizzo un'animazione confetti con la libreria react-rewards
   const { reward, isAnimating } = useReward("rewardId", "confetti", {
     angle: 90,
   });
 
-  // GESTIONE VIDEO PLAYER
-  // stati
-  const [videoPlayer, setVideoPlayer] = useState<string | null>(null);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-
-  // quando la pagina viene caricata, mandiamo in play in automatico solo il PRIMO filmato
-  const hasRun = useRef(false); // utilizzo useRef per farlo eseguire solo al montaggio iniziale
-  useEffect(() => {
-    if (!hasRun.current) {
-      downloadNextMovie();
-      hasRun.current = true;
-    }
-  }, []);
-
-  // GESTIONE LOGICA
-  // stati
-  const [currentIndex, setCurrentIndex] = useState<number>(0); // per tenere traccia dell'index del filmato a cui siamo arrivati
+  // * stati per gestire la logica del gioco
   const [guesses, setGuesses] = useState<number>(3); // guesses disponibili ad ogni clip
   const [correctMovies, setCorrectMovies] = useState<number>(0); // film corretti
   const [isChoosing, setIsChoosing] = useState<boolean>(false); // se si sta scegliendo un film
 
+  // * prendo il currentindex, moviesfound e gamestatus dallo store
+  const currentIndex: number = useSelector(selectCurrentClipIndex);
+  const moviesFound: movieModel[] = useSelector(selectMoviesFound);
+  const gameStatus: gameStatusType = useSelector(selectGameStatus);
+
+  // * setto il dispatch
+  const dispatch: AppDispatch = useDispatch();
+
+  // * per gestire il videoplayer uso uno stato, un ref ed una funzione per scaricare la prossima clip, a cui fornisco setGuesses e setVideoPlayer
+  const [videoPlayer, setVideoPlayer] = useState<string | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const { downloadNextMovie } = useDownloadNextClip();
+  const handleDownloadNextMovie = async () => {
+    await downloadNextMovie(setGuesses, setVideoPlayer);
+  };
+
+  // * quando la pagina viene caricata, mandiamo in play in automatico solo il PRIMO filmato
+  // ed utilizzo useRef per farlo eseguire solo al montaggio iniziale
+  const hasRun = useRef(false);
+  useEffect(() => {
+    if (!hasRun.current) {
+      handleDownloadNextMovie();
+      hasRun.current = true;
+    }
+  }, []);
+
+  //--- LOGICA GIOCO ---//
   // aspetto che il video sia caricato prima di metterlo in pausa
   const waitForVideoRef = (): Promise<HTMLVideoElement> => {
     return new Promise((resolve) => {
@@ -82,7 +105,7 @@ const localGameSingleplayer: React.FC<Props> = ({
     // rifacciamo partire il video se questo non è finito: altrimenti scarichiamo il prossimo filmato
     if (videoRef.current) {
       if (videoRef.current.ended) {
-        downloadNextMovie();
+        handleDownloadNextMovie();
         return;
       } else {
         videoRef.current.play();
@@ -107,11 +130,11 @@ const localGameSingleplayer: React.FC<Props> = ({
     if (currentIndex >= moviesFound.length) {
       // simulo un caricamento
       setTimeout(() => {
-        setPlayStatus("finished");
+        dispatch(setGameStatus("ended"));
       }, 1000);
     } else {
       // altrimenti scarichiamo la prossima clip
-      downloadNextMovie();
+      handleDownloadNextMovie();
     }
   };
 
@@ -125,59 +148,10 @@ const localGameSingleplayer: React.FC<Props> = ({
     if (guesses === 1 && currentIndex >= moviesFound.length) {
       // simulo un caricamento
       setTimeout(() => {
-        setPlayStatus("finished");
+        dispatch(setGameStatus("ended"));
       }, 1000);
       // se invece non è l'ultima clip, scarichiamo la prossima
-    } else if (guesses === 1) downloadNextMovie();
-  };
-
-  // gestione chiamata api per scaricare la prossima clip
-  const downloadNextMovie = async () => {
-    // se siamo già a fine lista, non facciamo niente
-    if (currentIndex >= moviesFound.length) return;
-
-    // resettiamo il video player ed il numero di guesses
-    setGuesses(3);
-    setVideoPlayer(null); // in questo modo viene mostrato lo spinner
-
-    // prendiamo il prossimo filmato ed incrementiamo l'index
-    const nextMovie: movieModel = moviesFound[currentIndex];
-    setCurrentIndex(currentIndex + 1);
-
-    // stringa per il video
-    let videoUrl: string = "";
-    try {
-      // scarichiamo il filmato facendo una chiamata all'api di clip cafe
-      const downloadResponse = await fetch(nextMovie.download);
-      // gestione errori HTTP
-      if (!downloadResponse.ok)
-        throw new Error(`Status: ${downloadResponse.status}`);
-
-      // trasformiamo la risposta in un blob e creiamo un URL per il video
-      const blob = await downloadResponse.blob();
-      videoUrl = URL.createObjectURL(blob);
-    } catch (err) {
-      addToast({
-        title: "Error when downloading the movies",
-        description:
-          err instanceof Error ? err.message : "An unknown error occurred",
-        color: "danger",
-        timeout: 2900,
-        shouldShowTimeoutProgress: true,
-      });
-      // reindirizzo all'home page dopo il toast
-      // soluzione temporanea! TODO: MANDARE IL TOAST DOPO REINDIRIZZAMENTO COME FATTO PER OAUTH
-      // setTimeout(() => {
-      //   window.location.href = "/";
-      // }, 3000);
-    } finally {
-      // aspettiamo un secondo (per fingere un caricamento) prima di mostrare il video
-      if (videoUrl !== "") {
-        setTimeout(() => {
-          setVideoPlayer(videoUrl);
-        }, 1000);
-      }
-    }
+    } else if (guesses === 1) handleDownloadNextMovie();
   };
 
   // gestione fine video

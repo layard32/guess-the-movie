@@ -1,4 +1,3 @@
-import React from "react";
 import DefaultLayout from "@/layouts/default";
 import { Spinner } from "@heroui/spinner";
 

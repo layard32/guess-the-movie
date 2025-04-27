@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { selectUser } from "@/state/selectors";
+import { selectUser } from "@/state/authSlice";
 
 // custom hook per ottenre l'username
 const giveUsername = () => {

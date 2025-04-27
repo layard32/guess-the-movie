@@ -1,7 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage"; // Use localStorage for persistence
+import storage from "redux-persist/lib/storage"; // use localStorage for persistence
 import authReducer from "./authSlice";
+import gameReducer from "./gameSlice";
 import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
 
 // utilizzo persist per memorizzare lo stato dell'auth
@@ -11,12 +12,13 @@ const persistConfig = {
   storage, 
 };
 
-// creo il reducer persistente
+// creo il reducer persistente (solo per auth!)
 const persistedAuthReducer = persistReducer(persistConfig, authReducer);
 
 // creo lo store
 const store = configureStore({
   reducer: {
+    game: gameReducer,
     auth: persistedAuthReducer, 
   },
   middleware: (getDefaultMiddleware) =>

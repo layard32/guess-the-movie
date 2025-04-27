@@ -10,7 +10,7 @@ import {
 import { ThemeSwitch } from "@/components/theme-switch";
 import { Logo } from "@/components/icons";
 import { useSelector } from "react-redux";
-import { selectUser } from "@/state/selectors";
+import { selectUser } from "@/state/authSlice";
 import { Button } from "@heroui/button";
 import SignInButtonLink from "./authComponents/signInButtonLink";
 import LogInButtonLink from "./authComponents/logInButtonLink";

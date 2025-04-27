@@ -1,41 +1,47 @@
+// import da heroui
+import { Accordion, AccordionItem } from "@heroui/accordion";
+import { NumberInput } from "@heroui/number-input";
+import { Input } from "@heroui/input";
 import { Form } from "@heroui/form";
 import { Select, SelectItem } from "@heroui/select";
+
+// import di icone
 import { IoGameControllerOutline } from "react-icons/io5";
 import { GiTabletopPlayers } from "react-icons/gi";
 import { IoIosPhonePortrait } from "react-icons/io";
 import { MdGroups3 } from "react-icons/md";
 import { PiListNumbers } from "react-icons/pi";
 import React from "react";
-import gameModeType from "@/state/myTypes";
-import { Accordion, AccordionItem } from "@heroui/accordion";
-import { NumberInput } from "@heroui/number-input";
-import { Input } from "@heroui/input";
 
-interface Props {
-  numberOfRounds: string;
-  setNumberOfRounds: React.Dispatch<React.SetStateAction<string>>;
-  gameMode: gameModeType;
-  setGameMode: React.Dispatch<React.SetStateAction<gameModeType>>;
-  numberOfPlayers: number;
-  setNumberOfPlayers: React.Dispatch<React.SetStateAction<number>>;
-  playerNames: string[];
-  setPlayerNames: React.Dispatch<React.SetStateAction<string[]>>;
-  excludedGenres: string[];
-  setExcludedGenres: React.Dispatch<React.SetStateAction<string[]>>;
-}
+// import di tipi
+import { gameModeType } from "@/state/myTypes";
 
-const localGameForm: React.FC<Props> = ({
-  numberOfRounds,
-  setNumberOfRounds,
-  gameMode,
+// import per stati con selectors e dispatcher
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/state/store";
+import {
   setGameMode,
-  numberOfPlayers,
+  setNumberOfRounds,
   setNumberOfPlayers,
-  playerNames,
-  setPlayerNames,
-  excludedGenres,
   setExcludedGenres,
-}: Props) => {
+  setPlayersName,
+  selectGameMode,
+  selectNumberOfRounds,
+  selectNumberOfPlayers,
+  selectExcludedGenres,
+  selectPlayersName,
+} from "@/state/gameSlice";
+
+const localGameForm: React.FC = () => {
+  // prendo stati (con selettori) e funzioni per settarli dallo store
+  const dispatch: AppDispatch = useDispatch();
+  const gameMode: gameModeType = useSelector(selectGameMode);
+  const numberOfRounds: number = useSelector(selectNumberOfRounds);
+  const numberOfPlayers: number = useSelector(selectNumberOfPlayers);
+  const excludedGenres: string[] = useSelector(selectExcludedGenres);
+  const playerNames: string[] = useSelector(selectPlayersName);
+
   return (
     <>
       <Form className="flex flex-col gap-4 justify-center items-center py-2.5 overflow-hidden">
@@ -50,9 +56,18 @@ const localGameForm: React.FC<Props> = ({
           startContent={<IoGameControllerOutline />}
           size="lg"
           selectedKeys={[gameMode]}
-          onSelectionChange={(keys) =>
-            setGameMode(Array.from(keys)[0] as gameModeType)
-          }
+          onSelectionChange={(keys) => {
+            dispatch(setGameMode(Array.from(keys)[0] as gameModeType));
+            // se la modalità è gruppo o 1v1, setto il numero di giocatori a 2
+            if (
+              Array.from(keys)[0] === "group" ||
+              Array.from(keys)[0] === "1v1"
+            ) {
+              dispatch(setNumberOfPlayers(2));
+            } else {
+              dispatch(setNumberOfPlayers(1));
+            }
+          }}
         >
           <SelectItem key="singleplayer" textValue="Singleplayer">
             <div className="flex gap-2 items-center">
@@ -93,17 +108,17 @@ const localGameForm: React.FC<Props> = ({
 
         <Select
           isRequired
-          defaultSelectedKeys={[numberOfRounds]}
+          defaultSelectedKeys={[numberOfRounds.toString()]} // Convert numberOfRounds to a string
           label="Number of rounds"
           className="w-4/5"
           color="primary"
           variant="faded"
-          description="Choose the genres that must be included in the game"
+          description="Choose the number of rounds"
           startContent={<PiListNumbers />}
           size="lg"
-          selectedKeys={[numberOfRounds]}
-          onSelectionChange={(keys) =>
-            setNumberOfRounds(Array.from(keys)[0] as string)
+          selectedKeys={[numberOfRounds.toString()]} // Convert numberOfRounds to a string
+          onSelectionChange={
+            (keys) => dispatch(setNumberOfRounds(Number(Array.from(keys)[0]))) // Convert the selected key back to a number
           }
         >
           <SelectItem key="2" textValue="2">
@@ -111,7 +126,7 @@ const localGameForm: React.FC<Props> = ({
               <div className="flex flex-col">
                 <span className="text-small">2</span>
                 <span className="text-tiny text-default-400">
-                  Less round for a quicker game.
+                  Less rounds for a quicker game.
                 </span>
               </div>
             </div>
@@ -119,7 +134,7 @@ const localGameForm: React.FC<Props> = ({
           <SelectItem key="3" textValue="3">
             <div className="flex gap-2 items-center">
               <div className="flex flex-col">
-                <span className="text-small text-primary">3</span>
+                <span className="text-small">3</span>
                 <span className="text-tiny text-default-400">
                   The default number of rounds.
                 </span>
@@ -131,7 +146,7 @@ const localGameForm: React.FC<Props> = ({
               <div className="flex flex-col">
                 <span className="text-small">4</span>
                 <span className="text-tiny text-default-400">
-                  More round for longer game.
+                  More rounds for a longer game.
                 </span>
               </div>
             </div>
@@ -152,7 +167,7 @@ const localGameForm: React.FC<Props> = ({
             defaultValue={numberOfPlayers}
             onChange={(value) => {
               if (typeof value === "number") {
-                setNumberOfPlayers(value);
+                dispatch(setNumberOfPlayers(value));
               }
             }}
           />
@@ -175,7 +190,7 @@ const localGameForm: React.FC<Props> = ({
                   // semplice validazione
                   // solamente se il numero di generi esclusi è minore o uguale a 3
                   if (Array.from(keys).length <= 3) {
-                    setExcludedGenres(Array.from(keys) as string[]);
+                    dispatch(setExcludedGenres(Array.from(keys) as string[]));
                   }
                 }}
               >
@@ -229,7 +244,7 @@ const localGameForm: React.FC<Props> = ({
                       onChange={(e) => {
                         const newPlayerNames = [...playerNames];
                         newPlayerNames[i] = e.target.value;
-                        setPlayerNames(newPlayerNames);
+                        dispatch(setPlayersName(newPlayerNames));
                       }}
                     ></Input>
                   ))}

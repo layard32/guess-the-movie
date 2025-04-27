@@ -1,14 +1,14 @@
 import DefaultLayout from "@/layouts/default";
 import { Tabs, Tab } from "@heroui/tabs";
 import { Card, CardBody } from "@heroui/card";
-import authRedirect from "../hooks/authRedirect";
+import authRedirectTo from "@/hooks/authRedirectTo";
 import ProfileFieldsForm from "@/components/profileComponents/profileFieldsForm";
 import giveUsername from "@/hooks/giveUsername";
 import { useState, useEffect } from "react";
 
 export default function ProfilePage() {
   // controllo se c'è un utente: se non c'è lo rimando alla home`
-  const user = authRedirect("/");
+  const user = authRedirectTo("/");
   // prendo l'username dal custom hook
   const userName = giveUsername();
   // utilizzo matchmedia per controllare se sono su mobile o desktop

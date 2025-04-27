@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "wouter";
 import { useSelector } from "react-redux";
-import { selectUser, selectAuthLoading } from "../state/selectors";
+import { selectUser, selectAuthLoading } from "@/state/authSlice";
 
 // custom hooks per reindirizzare a redirectTo se l'utente non è loggato
 const authRedirect = (redirectTo: string = "/") => {

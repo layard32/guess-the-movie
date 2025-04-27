@@ -1,11 +1,12 @@
 import React from "react";
 import { movieModel } from "@/state/movieModel";
+import { useSelector } from "react-redux";
+import { selectMoviesFound } from "@/state/gameSlice";
 
-interface Props {
-  moviesFound: movieModel[];
-}
+const localGameResult: React.FC = () => {
+  // prendo moviesFound dallo store
+  const moviesFound: movieModel[] = useSelector(selectMoviesFound);
 
-const localGameResult: React.FC<Props> = ({ moviesFound }: Props) => {
   return (
     <div className="flex flex-col items-center py-8 px-4">
       <h1 className="text-3xl font-bold mb-8 text-center">Results</h1>
