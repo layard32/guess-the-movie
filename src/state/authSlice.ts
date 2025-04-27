@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { fetchSession, signOut } from "./thunks";
+import { RootState } from "../state/store";
 
 interface AuthState {
   user: any | null;
@@ -46,4 +47,11 @@ const authSlice = createSlice({
   },
 });
 
+// esportiamo il reducer
 export default authSlice.reducer;
+
+// esportiamo i selector per accedere allo stato
+export const selectUser = (state: RootState) => state.auth.user;
+export const selectSession = (state: RootState) => state.auth.session;
+export const selectAuthLoading = (state: RootState) => state.auth.loading;
+export const selectAuthError = (state: RootState) => state.auth.error;

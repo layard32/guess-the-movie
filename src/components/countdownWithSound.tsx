@@ -1,5 +1,5 @@
 import Countdown from "react-countdown";
-import tickingSoundSource from "@/../public/sound/clock-ticking.mp3";
+import tickingSoundSource from "@/sound/clock-ticking.mp3";
 import React, { useEffect, useRef } from "react";
 
 const countdownRenderer = ({ seconds }: { seconds: number }) => (
