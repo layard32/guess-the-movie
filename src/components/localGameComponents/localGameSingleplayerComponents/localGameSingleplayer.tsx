@@ -41,7 +41,7 @@ import { useDownloadNextClip } from "@/hooks/downloadNextClip";
 
 const localGameSingleplayer: React.FC = () => {
   // * per la risposta corretta utilizzo un'animazione confetti con la libreria react-rewards
-  const { reward, isAnimating } = useReward("rewardId", "confetti", {
+  const { reward } = useReward("rewardId", "confetti", {
     angle: 90,
   });
 
@@ -53,7 +53,6 @@ const localGameSingleplayer: React.FC = () => {
   // * prendo il currentindex, moviesfound e gamestatus dallo store
   const currentIndex: number = useSelector(selectCurrentClipIndex);
   const moviesFound: movieModel[] = useSelector(selectMoviesFound);
-  const gameStatus: gameStatusType = useSelector(selectGameStatus);
 
   // * setto il dispatch
   const dispatch: AppDispatch = useDispatch();
@@ -124,7 +123,8 @@ const localGameSingleplayer: React.FC = () => {
     // ed impostiamo moviesFound[currentIndex - 1] come film corretto
     setCorrectMovies(correctMovies + 1);
     reward();
-    moviesFound[currentIndex - 1].guessed = true;
+    // TODO: FIX
+    // moviesFound[currentIndex - 1].guessed = true;
 
     // se era l'ultima clip, impostiamo playStatus a finished
     if (currentIndex >= moviesFound.length) {
@@ -133,6 +133,7 @@ const localGameSingleplayer: React.FC = () => {
         dispatch(setGameStatus("ended"));
       }, 1000);
     } else {
+      console.log("test");
       // altrimenti scarichiamo la prossima clip
       handleDownloadNextMovie();
     }
@@ -142,6 +143,8 @@ const localGameSingleplayer: React.FC = () => {
     // decrementiamo il numero di guesses
     // ed impostiamo moviesFound[currentIndex - 1] come film sbagliato
     setGuesses(guesses - 1);
+
+    // TODO: FIX
     moviesFound[currentIndex - 1].guessed = false;
 
     // se le guesses sono finite ed era l'ultima clip, impostiamo playStatus a finished
